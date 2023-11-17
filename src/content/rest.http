@@ -1,0 +1,26 @@
+
+GET http://localhost:8000/key/locales
+NS: test
+DB: content
+Accept: application/json
+
+GET http://localhost:8000/key/media
+NS: test
+DB: content
+Accept: application/json
+
+GET http://localhost:8000/key/questions
+NS: test
+DB: content
+Accept: application/json
+
+GET http://localhost:8000/key/slides
+NS: test
+DB: content
+Accept: application/json
+
+GET http://localhost:8000/key/resources
+NS: test
+DB: content
+Accept: application/json
+

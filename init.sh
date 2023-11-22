@@ -15,7 +15,7 @@ entities=( \
   "outcome/base" \
   "outcome/answers" \
   "outcome/papers" \
-  "outcome/records" \
+  "outcome/scores" \
   "outcome/scripts" \
 )
 

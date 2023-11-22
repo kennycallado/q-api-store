@@ -3,6 +3,7 @@ DEFINE TABLE papers SCHEMAFULL PERMISSIONS NONE;
 
 -- fields
 DEFINE FIELD user       ON TABLE papers TYPE record<users>;
+DEFINE FIELD created    ON TABLE papers TYPE datetime DEFAULT time::now();
 DEFINE FIELD resource   ON TABLE papers TYPE record<resources>;
 DEFINE FIELD completed  ON TABLE papers TYPE bool DEFAULT false;
 
@@ -24,13 +25,13 @@ DEFINE event u_update_paper ON TABLE papers WHEN $event IS "UPDATE" THEN {
     IF $value.completed != $before.completed
     OR $value.resource  != $before.resource
     OR $value.user      != $before.user {
-      THROW "Update completed is not allowed"
+      THROW "Changes not allowed"
     };
 
     -- execute script
     fn::on_push($value);
   };
-  -- boorar
+  -- borrar
   fn::on_push($value);
 };
 

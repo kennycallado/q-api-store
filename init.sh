@@ -3,25 +3,43 @@
 set -e
 
 # cat ./base/create.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' --data-binary @- http://localhost:8000/import &> /dev/null
+#
+# inject_base=true
 
 layers=("project" "content" "outcome")
 entities=( \
   "project/projects" \
   "project/users" \
-  "content/base" \
   "content/locales" \
   "content/media" \
   "content/questions" \
   "content/slides" \
   "content/resources" \
-  "outcome/base" \
   "outcome/answers" \
   "outcome/papers" \
   "outcome/scores" \
   "outcome/scripts" \
 )
 
-# inject the data
+# inject base
+if [ "$inject_base" = true ]; then
+  for layer in ${layers[@]} ;do
+    if [[ "$layer" == *"content"* ]]; then
+      db="content"
+    else if [[ "$layer" == *"outcome"* ]]; then
+      db="outcome"
+    else if [[ "$layer" == *"project"* ]]; then
+      db="project"
+    fi
+    fi
+    fi
+
+    printf "\nDefinning base for $layer...\n"
+    cat ./base/create.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: '$db --data-binary @- http://localhost:8000/import
+  done
+fi
+
+# inject data
 for entity in ${entities[@]}; do
   if [[ "$entity" == *"content"* ]]; then
     db="content"
@@ -49,9 +67,8 @@ for entity in ${entities[@]}; do
   cd $pwd
 done
 
-# export the data
+# export dump
 for layer in ${layers[@]} ;do
-
   if [[ "$layer" == *"content"* ]]; then
     db="content"
   else if [[ "$layer" == *"outcome"* ]]; then
@@ -67,5 +84,4 @@ for layer in ${layers[@]} ;do
   printf "\nExporting $layer...\n"
   curl -sS -X 'GET' -H 'Accept: application/json' -H 'NS: main' -H 'DB: '$db http://localhost:8000/export > dump.surql
   cd $pwd
-
 done

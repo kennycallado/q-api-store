@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   surrealdb:
-    image: surrealdb/surrealdb:1.0.0
+    image: surrealdb/surrealdb:nightly
     container_name: surrealdb
     ports:
       - "8000:8000"

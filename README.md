@@ -1,6 +1,12 @@
 
 # q_api-resources
 
+## TODO:
+- answers: ??? spellanswers
+- papers: created to be able to sort
+- papers: remove on_push for now
+- record: change name to score
+
 ## Notes
 - Define $project
 - ensure use '--auth' in producction
@@ -23,11 +29,11 @@ docker compose up
 ## Repl
 
 ``` bash
-surreal sql --pretty -u root -p root --ns test --db <db>
+surreal sql --pretty -u root -p root --ns main --db <db>
 ```
 
 ``` bash
-docker exec -it surrealdb /surreal sql --pretty --ns test --db <db>
+docker exec -it surrealdb /surreal sql --pretty --ns main --db <db>
 ```
 
 ## Populate

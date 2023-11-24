@@ -1,36 +1,37 @@
 
 GET http://localhost:8000/export
-NS: test
+NS: main
 DB: content
 Accept: application/json
 
 GET http://localhost:8000/export
-NS: test
+NS: main
 DB: outcomes
 Accept: application/json
 
 ## IMPORT DUMP
 # -u "root:root" \
-cat ./src/content/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: test' -H 'DB: content' --data-binary @- http://localhost:8000/import &> /dev/null
-cat ./src/outcomes/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: test' -H 'DB: outcomes'    --data-binary @- http://localhost:8000/import &> /dev/null
+cat ./src/content/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: content' --data-binary @- http://localhost:8000/import &> /dev/null
+cat ./src/outcomes/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: outcomes'    --data-binary @- http://localhost:8000/import &> /dev/null
 
 DB: outcomes
 GET https://viewer:viewer@surreal.kennycallado.dev/key/logs
 GET https://surreal.kennycallado.dev/key/questions
 Authorization: Basic dmlld2VyOnZpZXdlcg
 
+
 GET http://localhost:8000/key/media
-NS: test
+NS: main
 DB: content
 Accept: application/json
 
 ###
+-u "root:root@lab" \
 curl -X POST \
-  -u "root:root@lab" \
-  -H "NS: test" \
+  -H "NS: main" \
   -H "DB: content" \
   -H "Accept: application/json" \
-  -d "SELECT * FROM resources where ref = 'module-1'" \
+  -d "SELECT * FROM resources WHERE ref = 'module-1'" \
   https://surreal.kennycallado.dev/sql | jq '.[].result'
 
   -d "SELECT * FROM resources FETCH module, slides, slides.question, form" \

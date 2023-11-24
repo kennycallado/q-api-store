@@ -1,29 +1,29 @@
 
 GET http://localhost:8000/key/answers
-NS: test
-DB: outcomes
+NS: main
+DB: outcome
 Accept: application/json
 
-GET http://localhost:8000/key/outcomes
-NS: test
-DB: outcomes
+GET http://localhost:8000/key/papers
+NS: main
+DB: outcome
 Accept: application/json
 
 GET http://localhost:8000/key/records
-NS: test
-DB: outcomes
+NS: main
+DB: outcome
 Accept: application/json
 
 GET http://localhost:8000/key/scripts
-NS: test
-DB: outcomes
+NS: main
+DB: outcome
 Accept: application/json
 
 ## 
 
-PATCH http://localhost:8000/key/outcomes/1
-NS: test
-DB: outcomes
+PATCH http://localhost:8000/key/papers/1
+NS: main
+DB: outcome
 Accept: application/json
 Content-Type: application/json
 

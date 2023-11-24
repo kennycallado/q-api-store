@@ -8,7 +8,7 @@ OPTION IMPORT;
 -- USERS
 -- ------------------------------
 
-DEFINE USER viewer ON DATABASE PASSHASH '$argon2id$v=19$m=19456,t=2,p=1$Oj6sTVhxQOa3zp1DlsskIQ$/s2eUkrLNs8xqk95tV/pPLMVeUefm869ycEjIOUbqHY' ROLES VIEWER;
+DEFINE USER viewer ON DATABASE PASSHASH '$argon2id$v=19$m=19456,t=2,p=1$gH7lZzRCSx85iu5Vf6UXtA$Iy//osSuS3O+5eXHqf+/iyeU3oQQ6wHpXE2XNGuNW/g' ROLES VIEWER;
 
 -- ------------------------------
 -- PARAMS
@@ -61,10 +61,13 @@ DEFINE EVENT papers_log ON papers WHEN $event = 'CREATE' OR $event = 'UPDATE' OR
 DEFINE EVENT u_update_paper ON papers WHEN $event = 'UPDATE' THEN {
 LET $user = $auth.id;
 IF $user != NONE {
-IF $value.completed != $before.completed OR $value.resource != $before.resource OR $value.user != $before.user { THROW 'Changes not allowed'; };
-fn::on_push($value);
+IF $value.completed != $before.completed OR $value.resource != $before.resource OR $value.user != $before.user {
+CREATE logs SET index = $before.id, event = 'ERROR: update not allowed', time = time::now();
+THROW 'Changes not allowed';
 };
 fn::on_push($value);
+};
+IF $value.completed = false { LET $blah = fn::on_push($value); };
 };
 
 -- ------------------------------
@@ -110,22 +113,23 @@ UPDATE answers:2 CONTENT { answer: '10', id: answers:2, question: questions:2 };
 -- TABLE DATA: create_paper
 -- ------------------------------
 
-RELATE projects:x85w529lxx2a3bgfsz11 -> create_paper:ghevbdpumd40dxxc7a5a -> papers:1 CONTENT { __: true, id: create_paper:ghevbdpumd40dxxc7a5a, in: projects:x85w529lxx2a3bgfsz11, out: papers:1 };
+RELATE projects:x85w529lxx2a3bgfsz11 -> create_paper:w4pczglmvp0kp9gnlgv6 -> papers:1 CONTENT { __: true, id: create_paper:w4pczglmvp0kp9gnlgv6, in: projects:x85w529lxx2a3bgfsz11, out: papers:1 };
 
 -- ------------------------------
 -- TABLE DATA: logs
 -- ------------------------------
 
-UPDATE logs:al6qadh05pgd7jgj2y6g CONTENT { event: 'CREATE', id: logs:al6qadh05pgd7jgj2y6g, index: answers:2, time: '2023-11-22T14:43:43.949488626Z' };
-UPDATE logs:nwfp96ypyb25y5vicwzf CONTENT { event: 'CREATE', id: logs:nwfp96ypyb25y5vicwzf, index: answers:1, time: '2023-11-22T14:43:43.949305924Z' };
-UPDATE logs:sg3jfehsp5xdx585ehgg CONTENT { event: 'CREATE', id: logs:sg3jfehsp5xdx585ehgg, index: scripts:1, time: '2023-11-22T14:43:44.047859408Z' };
-UPDATE logs:utv1vnoy7h786knv1cj8 CONTENT { event: 'CREATE', id: logs:utv1vnoy7h786knv1cj8, index: papers:1, time: '2023-11-22T14:43:43.989674012Z' };
+UPDATE logs:0areu7z8jywlj7x51d7u CONTENT { event: 'CREATE', id: logs:0areu7z8jywlj7x51d7u, index: papers:1, time: '2023-11-24T11:13:34.610906747Z' };
+UPDATE logs:4k9arwo634h83pww9m41 CONTENT { event: 'CREATE', id: logs:4k9arwo634h83pww9m41, index: scripts:1, time: '2023-11-24T11:13:34.674408517Z' };
+UPDATE logs:5ym6s1wzkag38e8fb14s CONTENT { event: 'CREATE', id: logs:5ym6s1wzkag38e8fb14s, index: answers:2, time: '2023-11-24T11:13:34.569554816Z' };
+UPDATE logs:emrqjft4monaye8mg4uj CONTENT { event: 'UPDATE', id: logs:emrqjft4monaye8mg4uj, index: scripts:1, time: '2023-11-24T11:13:34.674948919Z' };
+UPDATE logs:ionwxxo9645ss7js4uqt CONTENT { event: 'CREATE', id: logs:ionwxxo9645ss7js4uqt, index: answers:1, time: '2023-11-24T11:13:34.568798157Z' };
 
 -- ------------------------------
 -- TABLE DATA: papers
 -- ------------------------------
 
-UPDATE papers:1 CONTENT { answers: [], completed: false, created: '2023-11-22T14:43:43.989406362Z', id: papers:1, resource: resources:1, user: users:1 };
+UPDATE papers:1 CONTENT { answers: [], completed: false, created: '2023-11-24T11:13:34.610586433Z', id: papers:1, resource: resources:1, user: users:1 };
 
 -- ------------------------------
 -- TABLE DATA: scores
@@ -136,7 +140,23 @@ UPDATE papers:1 CONTENT { answers: [], completed: false, created: '2023-11-22T14
 -- TABLE DATA: scripts
 -- ------------------------------
 
-UPDATE scripts:1 CONTENT { code: "console.log('hello form function')", id: scripts:1, name: 'push' };
+UPDATE scripts:1 CONTENT { code: '
+switch(user.score.step) {
+  case 1:
+    console.log("Reached step 1")
+    break;
+
+  case undefined:
+    user.actions.push({ action: "add_resource", params: ["form-1"] });
+    console.log("Resource added asynchronously");
+
+    user.score = { step: 1 , mood: 0 , state: "ignition" };
+    break;
+
+  default:
+    console.log("Reached default case");
+    break;
+}', id: scripts:1, name: 'push' };
 
 -- ------------------------------
 -- TRANSACTION

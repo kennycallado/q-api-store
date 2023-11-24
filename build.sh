@@ -21,13 +21,13 @@ while ! curl -s http://localhost:8000/status &> /dev/null; do
 done
 
 # import the data
-cat ./src/content/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: test' -H 'DB: content' --data-binary @- http://localhost:8000/import &> /dev/null
-cat ./src/outcome/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: test' -H 'DB: outcome'    --data-binary @- http://localhost:8000/import &> /dev/null
+cat ./src/content/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: content' --data-binary @- http://localhost:8000/import &> /dev/null
+cat ./src/outcome/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: outcome'    --data-binary @- http://localhost:8000/import &> /dev/null
 
 # remove platform users: viewer, editor, admin
 curl -sS -X POST \
   -u "root:root" \
-  -H "NS: test" \
+  -H "NS: main" \
   -H "Accept: application/json" \
   -d "REMOVE USER admin ON NS;
       USE DB content;

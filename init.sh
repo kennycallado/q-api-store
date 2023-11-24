@@ -2,10 +2,12 @@
 
 set -e
 
-cat ./base/create.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: test' --data-binary @- http://localhost:8000/import &> /dev/null
+# cat ./base/create.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' --data-binary @- http://localhost:8000/import &> /dev/null
 
-layers=("content" "outcome")
+layers=("project" "content" "outcome")
 entities=( \
+  "project/projects" \
+  "project/users" \
   "content/base" \
   "content/locales" \
   "content/media" \
@@ -21,11 +23,13 @@ entities=( \
 
 # inject the data
 for entity in ${entities[@]}; do
-
   if [[ "$entity" == *"content"* ]]; then
     db="content"
   else if [[ "$entity" == *"outcome"* ]]; then
     db="outcome"
+  else if [[ "$entity" == *"project"* ]]; then
+    db="project"
+  fi
   fi
   fi
 
@@ -34,12 +38,12 @@ for entity in ${entities[@]}; do
 
   if [ -f "./define.surql" ]; then
     printf "\nDefinning $entity...\n"
-    cat ./define.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: test' -H 'DB: '$db --data-binary @- http://localhost:8000/import
+    cat ./define.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: '$db --data-binary @- http://localhost:8000/import
   fi
 
   if [ -f "./create.surql" ]; then
     printf "\nCreating $entity...\n"
-    cat ./create.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: test' -H 'DB: '$db --data-binary @- http://localhost:8000/import
+    cat ./create.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: '$db --data-binary @- http://localhost:8000/import
   fi
 
   cd $pwd
@@ -52,13 +56,16 @@ for layer in ${layers[@]} ;do
     db="content"
   else if [[ "$layer" == *"outcome"* ]]; then
     db="outcome"
+  else if [[ "$layer" == *"project"* ]]; then
+    db="project"
+  fi
   fi
   fi
 
   pwd=$(pwd)
   cd src/$layer
   printf "\nExporting $layer...\n"
-  curl -sS -X 'GET' -H 'Accept: application/json' -H 'NS: test' -H 'DB: '$db http://localhost:8000/export > dump.surql
+  curl -sS -X 'GET' -H 'Accept: application/json' -H 'NS: main' -H 'DB: '$db http://localhost:8000/export > dump.surql
   cd $pwd
 
 done

@@ -22,9 +22,11 @@ done
 
 # import the data
 cat ./src/content/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: content' --data-binary @- http://localhost:8000/import &> /dev/null
-cat ./src/outcome/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: outcome'    --data-binary @- http://localhost:8000/import &> /dev/null
+cat ./src/outcome/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: outcome' --data-binary @- http://localhost:8000/import &> /dev/null
+cat ./src/outcome/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: project' --data-binary @- http://localhost:8000/import &> /dev/null
 
 # remove platform users: viewer, editor, admin
+# should be resolved jet but just in case
 curl -sS -X POST \
   -u "root:root" \
   -H "NS: main" \
@@ -33,6 +35,8 @@ curl -sS -X POST \
       USE DB content;
       REMOVE USER viewer ON DB;
       USE DB outcome;
+      REMOVE USER viewer ON DB;
+      USE DB project;
       REMOVE USER viewer ON DB;
       REMOVE USER root ON ROOT" \
   http://localhost:8000/sql | jq '.[].status'

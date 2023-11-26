@@ -8,13 +8,12 @@ DEFINE FIELD question ON TABLE answers TYPE record<questions>;
 -- indexes
 
 -- events
-DEFINE EVENT u_create_answer ON TABLE answers WHEN $event = "CREATE" THEN {
-  LET $user = $auth.id;
-
-  IF $user != NONE {
-    RELATE $user->create_answer->$value;
-  };
-};
+-- DEFINE EVENT u_create_answer ON TABLE answers WHEN $event = "CREATE" THEN {
+--   LET $user = $auth.id;
+--   IF $user != NONE {
+--     RELATE $user->create_answer->$value;
+--   };
+-- };
 
 DEFINE EVENT answers_log ON TABLE answers WHEN $event = "CREATE" OR $event = "UPDATE" OR $event = "DELETE" THEN {
   IF $event = 'DELETE' {

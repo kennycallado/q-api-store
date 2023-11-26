@@ -24,9 +24,9 @@ DEFINE FIELD slides.* ON TABLE resources TYPE record<slides>;
 DEFINE INDEX resources_ref_unique ON TABLE resources FIELDS ref UNIQUE;
 
 -- events
-DEFINE EVENT p_create_resource ON TABLE resources WHEN $event = "CREATE" THEN {
-  RELATE $project->create_resource->$value;
-};
+-- DEFINE EVENT p_create_resource ON TABLE resources WHEN $event = "CREATE" THEN {
+--   RELATE $project->create_resource->$value;
+-- };
 
 DEFINE EVENT resources_log ON TABLE resources WHEN $event = "CREATE" OR $event = "UPDATE" OR $event = "DELETE" THEN {
   IF $event = 'DELETE' {

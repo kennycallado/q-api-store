@@ -13,9 +13,9 @@ DEFINE FIELD answers[*] ON TABLE papers TYPE record<answers>;
 -- indexes
 
 -- events
-DEFINE EVENT p_create_paper ON TABLE papers WHEN $event IS "CREATE" THEN {
-  RELATE $project->create_paper->$value;
-};
+-- DEFINE EVENT p_create_paper ON TABLE papers WHEN $event IS "CREATE" THEN {
+--   RELATE $project->create_paper->$value;
+-- };
 
 DEFINE event u_update_paper ON TABLE papers WHEN $event IS "UPDATE" THEN {
   LET $user = $auth.id;
@@ -36,7 +36,7 @@ DEFINE event u_update_paper ON TABLE papers WHEN $event IS "UPDATE" THEN {
 
   -- borrar: just for testing
   IF $value.completed = false {
-    $blah = fn::on_push($value);
+    $value = fn::on_push($value);
   };
 
 };

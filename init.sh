@@ -15,10 +15,11 @@ entities=( \
   "content/questions" \
   "content/slides" \
   "content/resources" \
+  "content/scripts" \
   "outcome/answers" \
+  "outcome/functions" \
   "outcome/papers" \
   "outcome/scores" \
-  "outcome/scripts" \
 )
 
 # inject base

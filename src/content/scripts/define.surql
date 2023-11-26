@@ -17,6 +17,3 @@ DEFINE EVENT scripts_log ON TABLE scripts WHEN $event = "CREATE" OR $event = "UP
     CREATE logs SET index = $value.id, event = $event, time = time::now();
   }
 };
-
--- functions
--- -- own folder

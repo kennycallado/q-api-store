@@ -23,7 +23,7 @@ done
 # import the data
 cat ./src/content/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: content' --data-binary @- http://localhost:8000/import &> /dev/null
 cat ./src/outcome/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: outcome' --data-binary @- http://localhost:8000/import &> /dev/null
-cat ./src/outcome/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: project' --data-binary @- http://localhost:8000/import &> /dev/null
+cat ./src/project/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: project' --data-binary @- http://localhost:8000/import &> /dev/null
 
 # remove platform users: viewer, editor, admin
 # should be resolved jet but just in case

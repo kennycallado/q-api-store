@@ -16,9 +16,9 @@ DEFINE FIELD question ON TABLE slides TYPE option<record<questions>> ASSERT $val
 -- indexes
 
 -- events
-DEFINE EVENT p_create_slide ON TABLE slides WHEN $event = "CREATE" THEN {
-  RELATE $project->create_slide->$value;
-};
+-- DEFINE EVENT p_create_slide ON TABLE slides WHEN $event = "CREATE" THEN {
+--   RELATE $project->create_slide->$value;
+-- };
 
 DEFINE EVENT slides_log ON TABLE slides WHEN $event = "CREATE" OR $event = "UPDATE" OR $event = "DELETE" THEN {
   IF $event = 'DELETE' {

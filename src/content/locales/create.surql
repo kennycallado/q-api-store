@@ -1,1 +1,1 @@
-INSERT INTO locales [{locale: 'vl'}, {locale: 'es'}, {locale: 'en'}]
+INSERT INTO locales [{locale: 'vl'}, {locale: 'es'}, {locale: 'en'}];

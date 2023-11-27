@@ -8,9 +8,9 @@ DEFINE FIELD locale ON TABLE locales TYPE string ASSERT string::len($value) = 2;
 -- indexes
 
 -- events
-DEFINE EVENT p_create_locale ON TABLE locales WHEN $event = "CREATE" THEN {
-  RELATE $project->create_locale->$value;
-};
+-- DEFINE EVENT p_create_locale ON TABLE locales WHEN $event = "CREATE" THEN {
+--   RELATE $project->create_locale->$value;
+-- };
 
 DEFINE EVENT locales_log ON TABLE locales WHEN $event = "CREATE" OR $event = "UPDATE" OR $event = "DELETE" THEN {
   IF $event = 'DELETE' {

@@ -27,7 +27,7 @@ for row in $(echo "${projects}" | jq -r '.[].result[] | @base64'); do
 
     pwd=$(pwd)
     cd src/$layer
-    cat ./dump.surql | curl ${user} -X 'POST' -H 'Accept: application/json' -H 'NS: project' -H 'DB: '$db --data-binary @- "$db_url/import"
+    cat ./dump.surql | curl ${user} -X 'POST' -H 'Accept: application/json' -H 'NS: projects' -H 'DB: '$db --data-binary @- "$db_url/import"
     cd $pwd
   done
 
@@ -45,7 +45,7 @@ for row in $(echo "${projects}" | jq -r '.[].result[] | @base64'); do
 
       pwd=$(pwd)
       cd src/$layer
-      cat ./seed.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: projects' -H 'DB: '$db --data-binary @- http://localhost:8000/import
+      cat ./seed.surql | curl ${user} -X 'POST' -H 'Accept: application/json' -H 'NS: projects' -H 'DB: '$db --data-binary @- "$db_url/import"
       cd $pwd
     done
   fi

@@ -2,6 +2,8 @@
 
 set -e
 
+version="0.1.0"
+
 # clean up
 rm -rf ./data
 mkdir ./data
@@ -26,7 +28,7 @@ cat ./src/outcome/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H '
 cat ./src/project/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: project' --data-binary @- http://localhost:8000/import &> /dev/null
 
 # remove platform users: viewer, editor, admin
-# should be resolved jet but just in case
+# should be already resolved but just in case
 curl -sS -X POST \
   -u "root:root" \
   -H "NS: main" \
@@ -55,7 +57,7 @@ for platform in ${platforms[@]}; do
   tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
 
   # build the image
-  docker build --platform ${platform} -t kennycallado/surreal:${tag} -f Containerfile .
+  docker build --platform ${platform} -t kennycallado/surreal:${version}-${tag} -f Containerfile .
 done
 
 # docker push -a kennycallado/surreal

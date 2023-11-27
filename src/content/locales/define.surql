@@ -2,7 +2,8 @@
 DEFINE TABLE locales SCHEMAFULL PERMISSIONS NONE;
 
 -- fields
-DEFINE FIELD locale ON TABLE locales TYPE string;
+-- -- ISO 639-1
+DEFINE FIELD locale ON TABLE locales TYPE string ASSERT string::len($value) = 2;
 
 -- indexes
 

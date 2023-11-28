@@ -9,12 +9,13 @@ rm -rf ./data
 mkdir ./data
 
 # init surrealdb with a volume
+# surrealdb/surrealdb:1.0.0 \
 docker run -d --rm \
   --user 1000:1000 \
   --name surrealdb \
   -v ./data:/data \
   -p 8000:8000 \
-  surrealdb/surrealdb:1.0.0 \
+  surrealdb/surrealdb:nightly \
   start --user root --pass root file://data/surdb.db
 
 while ! curl -s http://localhost:8000/status &> /dev/null; do
@@ -41,7 +42,7 @@ curl -sS -X POST \
       USE DB project;
       REMOVE USER viewer ON DB;
       REMOVE USER root ON ROOT" \
-  http://localhost:8000/sql | jq '.[].status'
+  http://localhost:8000/sql | jq '.[] | .status + " " + .time'
 
 # finish the instance
 docker kill surrealdb

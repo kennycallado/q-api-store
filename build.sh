@@ -34,14 +34,9 @@ curl -sS -X POST \
   -u "root:root" \
   -H "NS: main" \
   -H "Accept: application/json" \
-  -d "REMOVE USER admin ON NS;
-      USE DB content;
-      REMOVE USER viewer ON DB;
-      USE DB outcome;
-      REMOVE USER viewer ON DB;
-      USE DB project;
-      REMOVE USER viewer ON DB;
-      REMOVE USER root ON ROOT" \
+  -d "REMOVE USER admin   ON NS;
+      REMOVE USER viewer  ON NS;
+      REMOVE USER root    ON ROOT" \
   http://localhost:8000/sql | jq '.[] | .status + " " + .time'
 
 # finish the instance
@@ -60,6 +55,8 @@ for platform in ${platforms[@]}; do
   # build the image
   docker build --platform ${platform} -t kennycallado/surreal:${version}-${tag} -f Containerfile .
 done
+
+rm -rf ./data
 
 # docker push -a kennycallado/surreal
 # docker rmi 

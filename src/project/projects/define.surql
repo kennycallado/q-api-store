@@ -7,8 +7,6 @@ DEFINE FIELD state  ON TABLE projects TYPE string ASSERT $value IN ['development
 -- DEFINE FIELD brand  ON TABLE projects TYPE option<string> ASSERT $value IS EMPTY OR string::is::url($value);
 
 -- DEFINE FIELD database        ON TABLE projects TYPE option<object>;
--- DEFINE FIELD database.db     ON TABLE projects TYPE option<string>;
--- DEFINE FIELD database.ns     ON TABLE projects TYPE option<string>;
 -- DEFINE FIELD database.dbinst ON TABLE projects TYPE option<string>;
 -- DEFINE FIELD database.domain ON TABLE projects TYPE option<string>;
 

@@ -15,9 +15,9 @@ entities=( \
   "content/questions" \
   "content/slides" \
   "content/resources" \
-  "content/scripts" \
-  "outcome/answers" \
+  "outcome/scripts" \
   "outcome/functions" \
+  "outcome/answers" \
   "outcome/papers" \
   "outcome/scores" \
 )

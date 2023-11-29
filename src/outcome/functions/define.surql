@@ -4,10 +4,10 @@ DEFINE FUNCTION fn::on_cron($script: string, $users: array<record<users>>) {
   -- maybe if there is no paper for the user just create the actions...
   FOR $user in $users {
     LET $paper = (SELECT * FROM papers WHERE user = $user ORDER BY created DESC LIMIT 1)[0];
-    LET $user = fn::run_script(type::string($user), $script, $paper);
+    LET $user = fn::run_script($user, $script, $paper);
 
     -- save score
-    CREATE scores CONTENT { user: type::thing($user.id), score: $user.score };
+    CREATE scores CONTENT { user: <record> $user.id, score: $user.score };
 
     -- perform actions
     fn::actions($paper, $user);
@@ -16,23 +16,21 @@ DEFINE FUNCTION fn::on_cron($script: string, $users: array<record<users>>) {
 
 DEFINE FUNCTION fn::on_push($paper: object) {
   LET $script = (SELECT VALUE code FROM scripts WHERE name = 'push')[0];
-  LET $user = fn::run_script(type::string($paper.user), $script, $paper);
+  LET $user = fn::run_script($paper.user, $script, $paper);
 
   -- save score
-  CREATE scores CONTENT { user: $paper.user, score: $user.score };
+  CREATE scores CONTENT { user: <record> $user.id, score: $user.score };
 
   -- perform actions
   RETURN fn::actions($paper, $user);
 };
 
-DEFINE FUNCTION fn::run_script($user_id: string, $script: string, $paper: option<object>) {
+DEFINE FUNCTION fn::run_script($user_id: record<users>, $script: string, $paper: option<object>) {
   -- validation
-  -- paper optional because of on_cron could recive users whith out paper
+  -- paper optional because of on_cron could recive users whithout paper
 
   -- prepare score
-  LET $score  = (SELECT * FROM scores WHERE user = type::thing($user_id) ORDER BY created DESC LIMIT 1).score;
-
-  function($user_id, $score) { console.log(arguments) };
+  LET $score  = (SELECT * FROM scores WHERE user = $user_id ORDER BY created DESC LIMIT 1).score;
 
   RETURN function($user_id, $script, $paper, $score[0]) {
     const [user_id, script, paper, score] = arguments;
@@ -44,6 +42,7 @@ DEFINE FUNCTION fn::run_script($user_id: string, $script: string, $paper: option
       actions = [];
 
       constructor(id, paper, score = {}) {
+        // this.id = new Record(...id.split(':')); // this way produces users:⟨1⟩
         this.id = id;
         this.score = score;
         this.paper = paper;
@@ -87,7 +86,6 @@ DEFINE FUNCTION fn::actions($paper: option<object>, $user: object) {
         -- update paper
         IF $paper.resource = $resource.id {
           UPDATE $paper.id SET completed = true;
-          $paper.completed = true
         } ELSE {
           -- can fails if the ref is not found
           UPDATE (SELECT id, created FROM papers WHERE resource = $resource_id ORDER BY created DESC LIMIT 1)[0].id SET completed = true;
@@ -106,7 +104,8 @@ DEFINE FUNCTION fn::actions($paper: option<object>, $user: object) {
         LET $resource_id = (SELECT VALUE id FROM resources WHERE ref = $ref)[0];
 
         -- create paper
-        CREATE papers CONTENT { user: type::thing($user.id), resource: $resource_id };
+        -- CREATE papers CONTENT { user: type::thing($user.id), resource: $resource_id };
+        CREATE papers CONTENT { user: users:1, resource: resources:1 };
 
       };
     };

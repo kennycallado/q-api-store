@@ -9,7 +9,7 @@ BEGIN TRANSACTION;
 -- TABLE DATA: project/projects
 -- ------------------------------
 
-UPDATE projects:1 CONTENT { name: "demo", dbname: "demo" }
+UPDATE projects:1 CONTENT { name: "demo" }
 
 -- ------------------------------
 -- TABLE DATA: project/users

@@ -10,7 +10,7 @@ OPTION IMPORT;
 
 DEFINE TABLE locales SCHEMAFULL PERMISSIONS NONE;
 
-DEFINE FIELD locale ON locales TYPE string;
+DEFINE FIELD locale ON locales TYPE string ASSERT string::len($value) = 2;
 
 DEFINE EVENT locales_log ON locales WHEN $event = 'CREATE' OR $event = 'UPDATE' OR $event = 'DELETE' THEN { IF $event = 'DELETE' { CREATE logs SET index = $before.id, event = $event, time = time::now(); } ELSE { CREATE logs SET index = $value.id, event = $event, time = time::now(); }; };
 
@@ -66,19 +66,6 @@ DEFINE INDEX resources_ref_unique ON resources FIELDS ref UNIQUE;
 DEFINE EVENT resources_log ON resources WHEN $event = 'CREATE' OR $event = 'UPDATE' OR $event = 'DELETE' THEN { IF $event = 'DELETE' { CREATE logs SET index = $before.id, event = $event, time = time::now(); } ELSE { CREATE logs SET index = $value.id, event = $event, time = time::now(); }; };
 
 -- ------------------------------
--- TABLE: scripts
--- ------------------------------
-
-DEFINE TABLE scripts SCHEMAFULL PERMISSIONS NONE;
-
-DEFINE FIELD code ON scripts TYPE string;
-DEFINE FIELD name ON scripts TYPE string;
-
-DEFINE INDEX scripts_name ON scripts FIELDS name;
-
-DEFINE EVENT scripts_log ON scripts WHEN $event = 'CREATE' OR $event = 'UPDATE' OR $event = 'DELETE' THEN { IF $event = 'DELETE' { CREATE logs SET index = $before.id, event = $event, time = time::now(); } ELSE { CREATE logs SET index = $value.id, event = $event, time = time::now(); }; };
-
--- ------------------------------
 -- TABLE: slides
 -- ------------------------------
 
@@ -115,11 +102,6 @@ BEGIN TRANSACTION;
 
 -- ------------------------------
 -- TABLE DATA: resources
--- ------------------------------
-
-
--- ------------------------------
--- TABLE DATA: scripts
 -- ------------------------------
 
 

@@ -23,11 +23,12 @@ for row in $(echo "${projects}" | jq -r '.[].result[] | @base64'); do
   # inject dump
   for layer in ${layers[@]}; do
     db=$project_name
+
     printf "\nDefinning base for $layer...\n"
 
     pwd=$(pwd)
     cd src/$layer
-    cat ./dump.surql | curl ${user} -X 'POST' -H 'Accept: application/json' -H 'NS: projects' -H 'DB: '$db --data-binary @- "$db_url/import"
+    cat ./dump.surql | curl ${user} -sS -X 'POST' -H 'Accept: application/json' -H 'NS: projects' -H 'DB: '$db --data-binary @- "$db_url/import" |  jq '.[] | .status + " " + .time'
     cd $pwd
   done
 
@@ -41,11 +42,12 @@ for row in $(echo "${projects}" | jq -r '.[].result[] | @base64'); do
   if [ $seed == "y" ]; then
     for layer in ${layers[@]}; do
       db=$project_name
+
       printf "\nSeeding $layer...\n"
 
       pwd=$(pwd)
       cd src/$layer
-      cat ./seed.surql | curl ${user} -X 'POST' -H 'Accept: application/json' -H 'NS: projects' -H 'DB: '$db --data-binary @- "$db_url/import"
+      cat ./seed.surql | curl ${user} -sS -X 'POST' -H 'Accept: application/json' -H 'NS: projects' -H 'DB: '$db --data-binary @- "$db_url/import" | jq '.[] | .status + " " + .time'
       cd $pwd
     done
   fi

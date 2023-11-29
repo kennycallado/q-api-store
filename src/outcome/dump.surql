@@ -8,20 +8,17 @@ OPTION IMPORT;
 -- FUNCTIONS
 -- ------------------------------
 
-DEFINE FUNCTION fn::actions($paper: object, $user: object) {
+DEFINE FUNCTION fn::actions($paper: option<object>, $user: object) {
 FOR $action IN $user.actions {
 IF $action.action = 'resource_completed' { FOR $ref IN $action.params {
 LET $resource_id = (SELECT VALUE id FROM resources WHERE ref = $ref)[0];
-IF $paper.resource = $resource.id {
-UPDATE $paper.id SET completed = true;
-$paper.completed = true;
-} ELSE { UPDATE (SELECT id, created FROM papers WHERE resource = $resource_id ORDER BY created DESC LIMIT 1)[0].id SET completed = true; };
+IF $paper.resource = $resource.id { UPDATE $paper.id SET completed = true; } ELSE { UPDATE (SELECT id, created FROM papers WHERE resource = $resource_id ORDER BY created DESC LIMIT 1)[0].id SET completed = true; };
 }; };
 IF $action.action = 'add_resource' {
 function($action) { const [action] = arguments; console.log(action) };
 FOR $ref IN $action.params {
 LET $resource_id = (SELECT VALUE id FROM resources WHERE ref = $ref)[0];
-CREATE papers CONTENT { resource: $resource_id, user: $paper.user };
+CREATE papers CONTENT { resource: $resource_id, user: type::thing($user.id) };
 };
 };
 IF $action.action = 'user_active' {};
@@ -33,24 +30,22 @@ RETURN $paper;
 DEFINE FUNCTION fn::on_cron($script: string, $users: array<record<users>>) {
 LET $script = (SELECT VALUE code FROM scripts WHERE name = $script)[0];
 FOR $user IN $users {
-LET $paper = (SELECT * FROM papers WHERE user = $user ORDER BY created DESC LIMIT 1);
-LET $user = fn::run_script($script, $paper);
-CREATE scores CONTENT { score: $user.score, user: $paper.user };
+LET $paper = (SELECT * FROM papers WHERE user = $user ORDER BY created DESC LIMIT 1)[0];
+LET $user = fn::run_script($user, $script, $paper);
+CREATE scores CONTENT { score: $user.score, user: <record> $user.id };
 fn::actions($paper, $user);
 };
-function($script) { const [script] = arguments; console.log(script) };
-function($users) { const [users] = arguments; console.log(users) };
 };
 DEFINE FUNCTION fn::on_push($paper: object) {
 LET $script = (SELECT VALUE code FROM scripts WHERE name = 'push')[0];
-LET $user = fn::run_script($script, $paper);
-CREATE scores CONTENT { score: $user.score, user: $paper.user };
+LET $user = fn::run_script($paper.user, $script, $paper);
+CREATE scores CONTENT { score: $user.score, user: <record> $user.id };
 RETURN fn::actions($paper, $user);
 };
-DEFINE FUNCTION fn::run_script($script: string, $paper: option<object>) {
-LET $score = (SELECT * FROM scores WHERE user = $paper.user ORDER BY created DESC LIMIT 1).score;
-RETURN function($script, $paper, $score[0]) {
-    const [script, paper, score] = arguments;
+DEFINE FUNCTION fn::run_script($user_id: record<users>, $script: string, $paper: option<object>) {
+LET $score = (SELECT * FROM scores WHERE user = $user_id ORDER BY created DESC LIMIT 1).score;
+RETURN function($user_id, $script, $paper, $score[0]) {
+    const [user_id, script, paper, score] = arguments;
 
     const classUser = `class User {
       id;
@@ -58,8 +53,9 @@ RETURN function($script, $paper, $score[0]) {
       paper;
       actions = [];
 
-      constructor(paper = {}, score = {}) {
-        this.id = paper.user;
+      constructor(id, paper, score = {}) {
+        // this.id = new Record(...id.split(':')); // this way produces users:⟨1⟩
+        this.id = id;
         this.score = score;
         this.paper = paper;
       }
@@ -68,7 +64,7 @@ RETURN function($script, $paper, $score[0]) {
     const user = Function(`
       ${classUser};
       const surrealdb = null;
-      const user = new User(${JSON.stringify(paper)}, ${JSON.stringify(score)});
+      const user = new User(${JSON.stringify(user_id)}, ${JSON.stringify(paper)}, ${JSON.stringify(score)});
       ${script};
 
       // user.actions.push({ action: "resource_completed", params: ['module-1'] });
@@ -133,6 +129,19 @@ DEFINE FIELD user ON scores TYPE record<users>;
 DEFINE EVENT scores_log ON scores WHEN $event = 'CREATE' OR $event = 'UPDATE' OR $event = 'DELETE' THEN { IF $event = 'DELETE' { CREATE logs SET index = $before.id, event = $event, time = time::now(); } ELSE { CREATE logs SET index = $value.id, event = $event, time = time::now(); }; };
 
 -- ------------------------------
+-- TABLE: scripts
+-- ------------------------------
+
+DEFINE TABLE scripts SCHEMAFULL PERMISSIONS NONE;
+
+DEFINE FIELD code ON scripts TYPE string;
+DEFINE FIELD name ON scripts TYPE string;
+
+DEFINE INDEX scripts_name ON scripts FIELDS name;
+
+DEFINE EVENT scripts_log ON scripts WHEN $event = 'CREATE' OR $event = 'UPDATE' OR $event = 'DELETE' THEN { IF $event = 'DELETE' { CREATE logs SET index = $before.id, event = $event, time = time::now(); } ELSE { CREATE logs SET index = $value.id, event = $event, time = time::now(); }; };
+
+-- ------------------------------
 -- TRANSACTION
 -- ------------------------------
 
@@ -150,6 +159,11 @@ BEGIN TRANSACTION;
 
 -- ------------------------------
 -- TABLE DATA: scores
+-- ------------------------------
+
+
+-- ------------------------------
+-- TABLE DATA: scripts
 -- ------------------------------
 
 

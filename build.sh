@@ -9,14 +9,15 @@ rm -rf ./data
 mkdir ./data
 
 # init surrealdb with a volume
-# surrealdb/surrealdb:1.0.0 \
 docker run -d --rm \
   --user 1000:1000 \
   --name surrealdb \
   -v ./data:/data \
   -p 8000:8000 \
-  surrealdb/surrealdb:nightly \
+  surrealdb/surrealdb:1.0.0 \
   start --user root --pass root file://data/surdb.db
+
+  # surrealdb/surrealdb:nightly \
 
 while ! curl -s http://localhost:8000/status &> /dev/null; do
     echo "Waiting for surrealdb to start..."

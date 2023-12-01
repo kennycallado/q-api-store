@@ -2,24 +2,18 @@
 # q_api-resources
 
 ## TODO:
-- [ ] WARNING: diferenciar lógica servidor de lógica cliente
-  - la función on_push para testing necesito que funcione aquí
-    pero en realidad es parte de la lógica de cliente
-- [ ] all: everything in the same database
-- [ ] answers: ??? spellanswers should be in question.range
-- [X] papers: created to be able to sort
+- [ ] ? gitignore dump and seeds ?
+- [ ] functions: change them to match 1.0.0 or wait until bug fixed
+  - 1.0.0   - string doesn't cast to record
+  - nitghly - live queries mixed blob and json responses
+- [ ] questions: ??? spelled answers should be in question.range
 - [X] record: change name to score
 
 ## Notes
-- Define $project
-- [X] ensure use '--auth' in producction
-- `data/` needs wide permissions like 777...
-  - for better use --user 1000:1000
-- Every proyect is going to generate a ns with the name of the proyect id.
+- Every proyect is going to generate a db in projects ns
 - Authentication, for dev I have it off, take care on deploy.
-- Whats the way to store in a file?
 
-## Server
+## Dev Server
 
 ``` bash
 surreal start memory --no-banner -A --auth --user root --pass root
@@ -39,8 +33,29 @@ surreal sql --pretty -u root -p root --ns main --db <db>
 docker exec -it surrealdb /surreal sql --pretty --ns main --db <db>
 ```
 
+## Initialize
+
+``` bash
+bash init.sh
+```
+
+Then repl to create a project and user:
+
+``` surql
+CREATE projects:1 SET name = 'demo';
+CREATE users:1 SET project = projects:1;
+```
+
 ## Populate
 
+``` bash
+bash postinit.sh
+```
+
 ## Build
+
+``` bash
+bash build.sh
+```
 
 ## Deploy

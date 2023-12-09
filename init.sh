@@ -76,18 +76,18 @@ for entity in ${entities[@]}; do
     cat ./define.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: '$db --data-binary @- http://localhost:8000/import
   fi
 
-cat <<EOF >> ../seed.surql
+  cat <<EOF >> ../seed.surql
 -- ------------------------------
 -- TABLE DATA: $entity
 -- ------------------------------
 
 EOF
 
-if [ -f "./create.surql" ]; then
-  cat ./create.surql >> ../seed.surql
-fi
+  if [ -f "./create.surql" ]; then
+    cat ./create.surql >> ../seed.surql
+  fi
 
-cat <<EOF >> ../seed.surql
+  cat <<EOF >> ../seed.surql
 
 EOF
 

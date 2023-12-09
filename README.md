@@ -3,10 +3,11 @@
 
 ## TODO:
 - [ ] ? gitignore dump and seeds ?
-- [ ] functions: change them to match 1.0.0 or wait until bug fixed
-  - 1.0.0   - string doesn't cast to record
-  - nitghly - live queries mixed blob and json responses
-- [ ] questions: ??? spelled answers should be in question.range
+- [ ] surrealdb: version nightly until 1.1.0
+- [X] functions: change them to match 1.0.0 or wait until bug fixed
+  - go with nightly knowing that there is a problem with the select live
+- [X] questions: ??? spelled answers should be in question.range
+  - [?] question.*.options or spelled ??
 - [X] record: change name to score
 
 ## Notes

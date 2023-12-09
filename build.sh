@@ -7,9 +7,10 @@ version="0.1.0"
 # clean up
 rm -rf ./data
 mkdir ./data
+chmod -R 777 ./data
 
 # init surrealdb with a volume
-docker run -d --rm \
+podman run -d --rm \
   --user 1000:1000 \
   --name surrealdb \
   -v ./data:/data \
@@ -41,10 +42,10 @@ curl -sS -X POST \
   http://localhost:8000/sql | jq '.[] | .status + " " + .time'
 
 # finish the instance
-docker kill surrealdb
+podman kill surrealdb
 
 # make sure the data is accessible
-chmod -R 777 ./data
+podman run --rm -it --user 1000:1000 -v ./data:/data alpine:3.18 ash -c "chmod -R 777 /data/*"
 
 platforms=("linux/amd64" "linux/arm64")
 for platform in ${platforms[@]}; do
@@ -54,11 +55,41 @@ for platform in ${platforms[@]}; do
   tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
 
   # build the image
-  docker build --platform ${platform} -t kennycallado/surreal:${version}-${tag} -f Containerfile .
+  podman build --platform ${platform} -t kennycallado/surreal:${version}-${tag} -f Containerfile .
+  podman push kennycallado/surreal:${version}-${tag}
 done
+
+echo "Creating the manifest version: $version"
+podman manifest create kennycallado/surreal:$version
+for platform in ${platforms[@]}; do
+  tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
+  podman manifest add --arch ${tag} kennycallado/surreal:$version kennycallado/surreal:${version}-${tag}
+
+  podman manifest add --arch ${platform#*/} kennycallado/surreal:${version} kennycallado/surreal:${version}-${tag}
+done
+
+echo "Createing the latest manifest"
+podman manifest create kennycallado/surreal:latest
+for platform in ${platforms[@]}; do
+  tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
+  podman manifest add --arch ${tag} kennycallado/surreal:latest kennycallado/surreal:${version}-${tag}
+
+  podman manifest add --arch ${platform#*/} kennycallado/surreal:latest kennycallado/surreal:${version}-${tag}
+done
+
+echo "Pushing the manifests..."
+podman manifest push --rm kennycallado/surreal:$version docker://kennycallado/surreal:$version
+podman manifest push --rm kennycallado/surreal:latest docker://kennycallado/surreal:latest
+
+echo "Removing the images..."
+for platform in ${platforms[@]}; do
+  tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
+  podman rmi kennycallado/surreal:${version}-${tag}
+done
+
+echo "Cleaning up the manifest..."
+podman system prune -f
 
 rm -rf ./data
 
-# docker push -a kennycallado/surreal
-# docker rmi 
-# docker system prune -f
+exit 0

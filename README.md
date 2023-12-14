@@ -2,8 +2,8 @@
 # q_api-resources
 
 ## TODO:
-- [ ] ? gitignore dump and seeds ?
-- [ ] surrealdb: version nightly until 1.1.0
+- [X] ? gitignore dump and seeds ?
+- [X] surrealdb: version nightly until 1.1.0
 - [X] functions: change them to match 1.0.0 or wait until bug fixed
   - go with nightly knowing that there is a problem with the select live
 - [X] questions: ??? spelled answers should be in question.range
@@ -21,7 +21,7 @@ surreal start memory --no-banner -A --auth --user root --pass root
 ```
 
 ``` bash
-docker compose up
+podman compose up
 ```
 
 ## Repl
@@ -31,7 +31,7 @@ surreal sql --pretty -u root -p root --ns main --db <db>
 ```
 
 ``` bash
-docker exec -it surrealdb /surreal sql --pretty --ns main --db <db>
+podmas exec -it surrealdb /surreal sql --pretty --ns main --db <db>
 ```
 
 ## Initialize

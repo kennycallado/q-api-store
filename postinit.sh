@@ -1,6 +1,8 @@
 #/bin/bash
 
 #
+# Everything is just temporary, this script should be replaced
+# and should go over the database instead of use dump and seed
 
 set -e
 
@@ -30,16 +32,22 @@ for row in $(echo "${projects}" | jq -r '.[].result[] | @base64'); do
     cd src/$layer
     cat ./dump.surql | curl ${user} -sS -X 'POST' -H 'Accept: application/json' -H 'NS: projects' -H 'DB: '$db --data-binary @- "$db_url/import" |  jq '.[] | .status + " " + .time'
     cd $pwd
+
+    echo -e "\n------------"
+    echo "Project $project_name has been initialized."
+    echo "------------"
   done
 
   # seed
-  echo -e "\n------------"
-  echo "Project $project_name has been initialized."
-  echo "------------"
   echo "Would you like to seed $project_name? (y/n)"
   read seed
 
   if [ $seed == "y" ]; then
+    # copy the functions
+    printf "\nCopy the functions $layer...\n"
+    cat ./src/outcome/functions/define.surql | curl ${user} -sS -X 'POST' -H 'Accept: application/json' -H 'NS: projects' -H 'DB: '$db --data-binary @- "$db_url/import" | jq '.[] | .status + " " + .time'
+
+    # seeding
     for layer in ${layers[@]}; do
       db=$project_name
 

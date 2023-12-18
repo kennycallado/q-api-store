@@ -15,10 +15,10 @@ podman run -d --rm \
   --name surrealdb \
   -v ./data:/data \
   -p 8000:8000 \
-  surrealdb/surrealdb:1.0.0 \
+  surrealdb/surrealdb:nightly \
   start --user root --pass root file://data/surdb.db
 
-  # surrealdb/surrealdb:nightly \
+  # surrealdb/surrealdb:1.0.0 \
 
 while ! curl -s http://localhost:8000/status &> /dev/null; do
     echo "Waiting for surrealdb to start..."

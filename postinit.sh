@@ -1,64 +1,79 @@
-#/bin/bash
-
-#
-# Everything is just temporary, this script should be replaced
-# and should go over the database instead of use dump and seed
+#!/bin/bash
 
 set -e
 
 db_url="http://localhost:8000"
 user=""
-
 layers=("content" "outcome")
 
 _jq() {
   echo ${row} | base64 --decode | jq -r ${1}
 }
 
-projects=$(curl ${user} -sS -H 'Accept: application/json' -H 'NS: main' -H 'DB: project' -d 'SELECT * FROM projects' "$db_url/sql")
-for row in $(echo "${projects}" | jq -r '.[].result[] | @base64'); do
+get_projects() {
+  curl ${user} -sS -H 'Accept: application/json' -H 'NS: main' -H 'DB: project' -d 'SELECT * FROM projects' "$db_url/sql"
+}
 
-  project_id=$(echo $(_jq '.id'))
-  project_name=$(echo $(_jq '.name'))
-  # ??? if state == 'development' ns = 'dev' else ns = 'main'
+inject_dump() {
+  local layer=$1
+  local db=$2
 
-  # inject dump
-  for layer in ${layers[@]}; do
-    db=$project_name
+  printf "\nDefinning base for $layer...\n"
 
-    printf "\nDefinning base for $layer...\n"
+  local pwd=$(pwd)
+  cd src/$layer
+  cat ./dump.surql | curl ${user} -sS -X 'POST' -H 'Accept: application/json' -H 'NS: projects' -H 'DB: '$db --data-binary @- "$db_url/import" |  jq '.[] | .status + " " + .time'
+  cd $pwd
 
-    pwd=$(pwd)
-    cd src/$layer
-    cat ./dump.surql | curl ${user} -sS -X 'POST' -H 'Accept: application/json' -H 'NS: projects' -H 'DB: '$db --data-binary @- "$db_url/import" |  jq '.[] | .status + " " + .time'
-    cd $pwd
+  echo -e "\n------------"
+  echo "Project $db has been initialized."
+  echo "------------"
+}
 
-    echo -e "\n------------"
-    echo "Project $project_name has been initialized."
-    echo "------------"
-  done
+seed_project() {
+  local db=$1
 
-  # seed
-  echo "Would you like to seed $project_name? (y/n)"
+  echo "Would you like to seed $db? (y/n)"
   read seed
 
   if [ $seed == "y" ]; then
-    # copy the functions
-    printf "\nCopy the functions $layer...\n"
-    cat ./src/outcome/functions/define.surql | curl ${user} -sS -X 'POST' -H 'Accept: application/json' -H 'NS: projects' -H 'DB: '$db --data-binary @- "$db_url/import" | jq '.[] | .status + " " + .time'
-
-    # seeding
-    for layer in ${layers[@]}; do
-      db=$project_name
-
-      printf "\nSeeding $layer...\n"
-
-      pwd=$(pwd)
-      cd src/$layer
-      cat ./seed.surql | curl ${user} -sS -X 'POST' -H 'Accept: application/json' -H 'NS: projects' -H 'DB: '$db --data-binary @- "$db_url/import" | jq '.[] | .status + " " + .time'
-      cd $pwd
-    done
+    copy_functions $db
+    seed_layers $db
   fi
-  # end seed
+}
 
-done
+copy_functions() {
+  local db=$1
+
+  printf "\nCopy the functions $layer...\n"
+  cat ./src/outcome/functions/define.surql | curl ${user} -sS -X 'POST' -H 'Accept: application/json' -H 'NS: projects' -H 'DB: '$db --data-binary @- "$db_url/import" | jq '.[] | .status + " " + .time'
+}
+
+seed_layers() {
+  local db=$1
+
+  for layer in ${layers[@]}; do
+    printf "\nSeeding $layer...\n"
+
+    local pwd=$(pwd)
+    cd src/$layer
+    cat ./seed.surql | curl ${user} -sS -X 'POST' -H 'Accept: application/json' -H 'NS: projects' -H 'DB: '$db --data-binary @- "$db_url/import" | jq '.[] | .status + " " + .time'
+    cd $pwd
+  done
+}
+
+main() {
+  projects=$(get_projects)
+  for row in $(echo "${projects}" | jq -r '.[].result[] | @base64'); do
+    project_id=$(echo $(_jq '.id'))
+    project_name=$(echo $(_jq '.name'))
+
+    for layer in ${layers[@]}; do
+      inject_dump $layer $project_name
+    done
+
+    seed_project $project_name
+  done
+}
+
+main @

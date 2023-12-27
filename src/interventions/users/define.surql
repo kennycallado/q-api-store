@@ -2,8 +2,8 @@
 DEFINE TABLE users SCHEMAFULL PERMISSIONS NONE;
 
 -- fields
-DEFINE FIELD active   ON TABLE users TYPE bool DEFAULT false;
-DEFINE FIELD project  ON TABLE users TYPE record<projects> ASSERT $value IN (SELECT VALUE id FROM projects);
+-- DEFINE FIELD active   ON TABLE users TYPE bool DEFAULT false;
+-- DEFINE FIELD project  ON TABLE users TYPE record<projects> ASSERT $value IN (SELECT VALUE id FROM projects);
 
 -- indexes
 

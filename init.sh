@@ -1,133 +1,61 @@
-#!/bin/bash
+#! /usr/bin/env bash
 
 set -e
+pwd=$(pwd)
 
-# cat ./base/create.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' --data-binary @- http://localhost:8000/import &> /dev/null
-#
-# inject_base=true
+main() {
+  # profiles is temporary in db
+  local namespaces=("profiles" "interventions" "user_project")
 
-layers=("project" "content" "outcome")
-entities=( \
-  "project/projects" \
-  "project/users" \
-  "content/locales" \
-  "content/media" \
-  "content/questions" \
-  "content/slides" \
-  "content/resources" \
-  "outcome/scripts" \
-  "outcome/functions" \
-  "outcome/answers" \
-  "outcome/papers" \
-  "outcome/scores" \
-)
+  for ns in "${namespaces[@]}"; do
+    cd "src/$ns"
 
-# inject base
-if [ "$inject_base" = true ]; then
-  for layer in ${layers[@]} ;do
-    if [[ "$layer" == *"content"* ]]; then
-      db="content"
-    else if [[ "$layer" == *"outcome"* ]]; then
-      db="outcome"
-    else if [[ "$layer" == *"project"* ]]; then
-      db="project"
-    fi
-    fi
-    fi
+    for folder in */; do
+      if [ "$folder" == "_functions/" ]; then
 
-    printf "\nDefinning base for $layer...\n"
-    cat ./base/create.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: '$db --data-binary @- http://localhost:8000/import
+        for folder_in in "$folder"*/; do
+          for file in "$folder_in"*.surql; do
+            inject "$ns" "main" "$file"
+          done
+        done
+
+      else
+
+        for file in "$folder"*.surql; do
+          if [ "$file" == "${folder}define.surql" ]; then
+            inject "$ns" "main" "$file"
+          fi
+        done
+
+      fi
+    done
+
+    dump "$ns" "main"
+
+    cd "$pwd"
   done
-fi
+}
 
-# clean seeds and prepare
-for layer in ${layers[@]}; do
-  echo "" > src/$layer/seed.surql
+inject() {
+  local ns=$1
+  local db=$2
+  local file=$3
 
-  cat <<EOF >> src/$layer/seed.surql
--- ------------------------------
--- TRANSACTION
--- ------------------------------
-
-BEGIN TRANSACTION;
-
-EOF
-done
-# end clean seeds
-
-
-# inject data
-for entity in ${entities[@]}; do
-  if [[ "$entity" == *"content"* ]]; then
-    db="content"
-  else if [[ "$entity" == *"outcome"* ]]; then
-    db="outcome"
-  else if [[ "$entity" == *"project"* ]]; then
-    db="project"
+  if [ -f "$file" ]; then
+    curl -sS -X 'POST' -H 'Accept: application/json' -H "NS: $ns" -H "DB: $db" --data-binary @"$file" http://localhost:8000/import | jq '.[] | .status + " " + .time'
+  else
+    echo -e "\033[0;31mFile not found:\033[0m $file"
   fi
-  fi
-  fi
+}
 
-  pwd=$(pwd)
-  cd src/$entity
+dump() {
+  local ns=$1
+  local db=$2
 
-  if [ -f "./define.surql" ]; then
-    printf "\nDefinning $entity...\n"
-    cat ./define.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: '$db --data-binary @- http://localhost:8000/import
-  fi
+  curl -sS -X 'GET' -H 'Accept: application/json' -H "NS: $ns" -H "DB: $db" http://localhost:8000/export > dump.surql
+}
 
-  cat <<EOF >> ../seed.surql
--- ------------------------------
--- TABLE DATA: $entity
--- ------------------------------
+main "$@"
 
-EOF
-
-  if [ -f "./create.surql" ]; then
-    cat ./create.surql >> ../seed.surql
-  fi
-
-  cat <<EOF >> ../seed.surql
-
-EOF
-
-  # if [ -f "./create.surql" ]; then
-  #   printf "\nCreating $entity...\n"
-  #   cat ./create.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: '$db --data-binary @- http://localhost:8000/import
-  # fi
-
-  cd $pwd
-done
-# end inject data
-
-# end prepare seeds
-for layer in ${layers[@]}; do
-  cat <<EOF >> src/$layer/seed.surql
--- ------------------------------
--- TRANSACTION
--- ------------------------------
-
-COMMIT TRANSACTION;
-
-EOF
-done
-# end prepare seeds
-
-# export dump
-for layer in ${layers[@]} ;do
-  if [[ "$layer" == *"content"* ]]; then
-    db="content"
-  else if [[ "$layer" == *"outcome"* ]]; then
-    db="outcome"
-  else if [[ "$layer" == *"project"* ]]; then
-    db="project"
-  fi
-  fi
-  fi
-
-  pwd=$(pwd)
-  cd src/$layer
-  printf "\nExporting $layer...\n"
-  curl -sS -X 'GET' -H 'Accept: application/json' -H 'NS: main' -H 'DB: '$db http://localhost:8000/export > dump.surql
-  cd $pwd
-done
+cd "$pwd"
+exit 0

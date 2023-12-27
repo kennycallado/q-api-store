@@ -1,7 +1,66 @@
 
-# q_api-resources
+q_api-resources
+
+**warning**: project can't be named main
+
+### NS:
+
+- interventions
+- user_project
+
+#### _functions:
+
+#### DB:
+
+For every project there will be a database
+
+#### tables:
+
+- users
+
+- locales
+- media
+- questions
+- resoruces
+- slides
+
+- scripts
+
+- answers
+- papers
+- scores
+
+### Events:
+
+- **cron** (chronological script execution)
+- **done** (user finishes the intervention)
+- **init** (user joins the project)
+- **push** (user completes a resource)
+
+### Scripts:
+
+? maybe able to manage an intervention without scripts
+
+- **????** 
+- **done**
+- **init**
+- **push**
+
+### Actions:
+
+- resource_completed
+- add_resource
+- send_message
+- user_active
+- user_unactive
+- user_done
 
 ## TODO:
+
+- [ ] user_project: user.project should be equal
+- [ ] seed: repensar como debe funcionar examples y seed
+- [ ] DOCS: improve the docs
+- [ ] resources: optional script, result of the script in the paper?
 - [ ] 0.2.0: ??? wrap with rust
 - [X] slides: add media:2 to slides:1
 - [X] ? gitignore dump and seeds ?

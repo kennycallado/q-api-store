@@ -1,5 +1,14 @@
+# q_api-resources
 
-q_api-resources
+## Notes
+- Every proyect is going to generate a db in projects ns
+- Authentication, for dev I have it off, take care on deploy.
+
+## Todos:
+
+[link](TODO.md)
+
+---
 
 **warning**: project can't be named main
 
@@ -55,26 +64,6 @@ For every project there will be a database
 - user_unactive
 - user_done
 
-## TODO:
-
-- [ ] user_project: user.project should be equal
-- [ ] seed: repensar como debe funcionar examples y seed
-- [ ] DOCS: improve the docs
-- [ ] resources: optional script, result of the script in the paper?
-- [ ] 0.2.0: ??? wrap with rust
-- [X] slides: add media:2 to slides:1
-- [X] ? gitignore dump and seeds ?
-- [X] surrealdb: version nightly until 1.1.0
-- [X] functions: change them to match 1.0.0 or wait until bug fixed
-  - go with nightly knowing that there is a problem with the select live
-- [X] questions: ??? spelled answers should be in question.range
-  - [?] question.*.options or spelled ??
-- [X] record: change name to score
-
-## Notes
-- Every proyect is going to generate a db in projects ns
-- Authentication, for dev I have it off, take care on deploy.
-
 ## Dev Server
 
 ``` bash
@@ -101,17 +90,10 @@ podmas exec -it surrealdb /surreal sql --pretty --ns main --db <db>
 bash init.sh
 ```
 
-Then repl to create a project and user:
-
-``` surql
-CREATE projects:1 SET name = 'demo';
-CREATE users:1 SET project = projects:1;
-```
-
-## Populate
+## Seed
 
 ``` bash
-bash postinit.sh
+bash seed.sh demo
 ```
 
 ## Build

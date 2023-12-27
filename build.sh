@@ -3,50 +3,7 @@
 set -e
 
 version="0.1.0"
-
-# clean up
-rm -rf ./data
-mkdir ./data
-chmod -R 777 ./data
-
-# init surrealdb with a volume
-podman run -d --rm \
-  --user 1000:1000 \
-  --name surrealdb \
-  -v ./data:/data \
-  -p 8000:8000 \
-  surrealdb/surrealdb:nightly \
-  start --user root --pass root file://data/surdb.db
-
-  # surrealdb/surrealdb:1.0.0 \
-
-while ! curl -s http://localhost:8000/status &> /dev/null; do
-    echo "Waiting for surrealdb to start..."
-    sleep 1
-done
-
-# import the data
-cat ./src/content/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: content' --data-binary @- http://localhost:8000/import &> /dev/null
-cat ./src/outcome/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: outcome' --data-binary @- http://localhost:8000/import &> /dev/null
-cat ./src/project/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: main' -H 'DB: project' --data-binary @- http://localhost:8000/import &> /dev/null
-
-# remove platform users: viewer, editor, admin
-# should be already resolved but just in case
-curl -sS -X POST \
-  -u "root:root" \
-  -H "NS: main" \
-  -H "Accept: application/json" \
-  -d "REMOVE USER admin   ON NS;
-      REMOVE USER viewer  ON NS;
-      REMOVE USER root    ON ROOT" \
-  http://localhost:8000/sql | jq '.[] | .status + " " + .time'
-
-# finish the instance
-podman kill surrealdb
-
-# make sure the data is accessible
-podman run --rm -it --user 1000:1000 -v ./data:/data alpine:3.18 ash -c "chmod -R 777 /data/*"
-
+db_version="v1.1.0-beta.2"
 platforms=("linux/amd64" "linux/arm64")
 for platform in ${platforms[@]}; do
   echo "Building docker image for: $platform."

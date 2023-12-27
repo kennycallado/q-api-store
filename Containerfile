@@ -1,5 +1,5 @@
-# FROM surrealdb/surrealdb:1.0.0
-FROM surrealdb/surrealdb:nightly
+# FROM surrealdb/surrealdb:nightly
+FROM surrealdb/surrealdb:v1.1.0-beta.2
 
 COPY ./data /data
 

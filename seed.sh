@@ -59,6 +59,10 @@ inject_tables() {
       # clean key
       key=$(echo $r_key | sed 's/\"//g' | sed 's/,//g' | sed 's/ //g')
 
+      if [ "$key" == "logs" ]; then
+        continue
+      fi
+
       # get info for table
       info_table=$(sql "$ns" "main" "INFO FOR TB $key;")
 

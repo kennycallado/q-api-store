@@ -14,31 +14,29 @@ main() {
     cd "src/$ns"
 
     for folder in */; do
-      if [ "$folder" == "_functions/" ]; then
-        for folder_in in "$folder"*/; do
-          for file in "$folder_in"*.surql; do
+      if [ "$ns" == "interventions" ]; then
+        if [ "$folder" == "_scopes/" ]; then
+
+          for file in "$folder"*.surql; do
             inject "$ns" "main" "$file"
           done
-        done
+        else
 
-      else if [ "$folder" == "_scopes/" ]; then
-        for file in "$folder"*.surql; do
+          for folder_in in "$folder"*/; do
+            for file in "$folder_in"*.surql; do
+              inject "$ns" "main" "$file"
+            done
+          done
+        fi
+      else # profiles and user_project
+
+        if [ "$file" == "${folder}define.surql" ]; then
           inject "$ns" "main" "$file"
-        done
-
-      else
-        for file in "$folder"*.surql; do
-          if [ "$file" == "${folder}define.surql" ]; then
-            inject "$ns" "main" "$file"
-          fi
-        done
-
-      fi
+        fi
       fi
     done
 
     dump "$ns" "main"
-
     cd "$pwd"
   done
 }

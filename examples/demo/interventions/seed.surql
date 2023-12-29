@@ -11,10 +11,11 @@ OPTION IMPORT;
 BEGIN TRANSACTION;
 
 -- ------------------------------
--- TABLE DATA: scripts
+-- TABLE DATA: users
 -- ------------------------------
 
-UPDATE users:1 SET active = true;
+-- pass = '01HJTEBG4Y1EAXPATENCDCT7WW'
+UPDATE users:1 SET pass = '$argon2id$v=19$m=19456,t=2,p=1$V8T08HLLBA1zbjJuCIqZ6A$S+6semSfdHyeqimOAsIrPZpb+B+FZ6bwxvjm2gTMvUc';
 
 -- ------------------------------
 -- TABLE DATA: locales

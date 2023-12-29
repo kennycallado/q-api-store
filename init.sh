@@ -3,6 +3,9 @@
 set -e
 pwd=$(pwd)
 
+db_url="http://localhost:8000"
+db_user="-u root:root"
+
 main() {
   # profiles is temporary in db
   local namespaces=("profiles" "interventions" "user_project")
@@ -12,7 +15,6 @@ main() {
 
     for folder in */; do
       if [ "$folder" == "_functions/" ]; then
-
         for folder_in in "$folder"*/; do
           for file in "$folder_in"*.surql; do
             inject "$ns" "main" "$file"
@@ -41,8 +43,9 @@ inject() {
   local db=$2
   local file=$3
 
+  echo "$file"
   if [ -f "$file" ]; then
-    curl -sS -X 'POST' -H 'Accept: application/json' -H "NS: $ns" -H "DB: $db" --data-binary @"$file" http://localhost:8000/import | jq '.[] | .status + " " + .time'
+    curl $db_user -sS -X 'POST' -H 'Accept: application/json' -H "NS: $ns" -H "DB: $db" --data-binary @"$file" "$db_url/import" | jq '.[] | .status + " " + .time'
   else
     echo -e "\033[0;31mFile not found:\033[0m $file"
   fi
@@ -52,7 +55,7 @@ dump() {
   local ns=$1
   local db=$2
 
-  curl -sS -X 'GET' -H 'Accept: application/json' -H "NS: $ns" -H "DB: $db" http://localhost:8000/export > dump.surql
+  curl $db_user -sS -X 'GET' -H 'Accept: application/json' -H "NS: $ns" -H "DB: $db" "$db_url/export" > dump.surql
 }
 
 main "$@"

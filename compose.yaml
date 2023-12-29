@@ -10,10 +10,10 @@ services:
       - start
       - memory
       - -A
-      # - --auth
+      - --auth
       - --no-banner
       - --log=trace
       # - --log=info
-      # - --user=root
-      # - --pass=root
+      - --user=root
+      - --pass=root
       - --bind=0.0.0.0:8000

@@ -4,7 +4,7 @@ set -e
 pwd=$(pwd)
 
 db_url="http://localhost:8000"
-db_user=""
+db_user="-u root:root"
 
 main() {
   example="$1"
@@ -118,6 +118,7 @@ inject() {
   local db=$2
   local file=$3
 
+  echo "$file"
   if [ -f "$file" ] && [[ $file == *.surql ]]; then
     curl $db_user -sS -X 'POST' -H 'Accept: application/json' -H "NS: $ns" -H "DB: $db" --data-binary @"$file" "$db_url/import" | jq '.[] | .status + " " + .time'
   else

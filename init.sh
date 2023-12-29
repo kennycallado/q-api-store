@@ -21,14 +21,19 @@ main() {
           done
         done
 
-      else
+      else if [ "$folder" == "_scopes/" ]; then
+        for file in "$folder"*.surql; do
+          inject "$ns" "main" "$file"
+        done
 
+      else
         for file in "$folder"*.surql; do
           if [ "$file" == "${folder}define.surql" ]; then
             inject "$ns" "main" "$file"
           fi
         done
 
+      fi
       fi
     done
 

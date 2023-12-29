@@ -1,1 +1,1 @@
-UPDATE users:1 CONTENT { active: true, project: projects:1 }
+UPDATE users:1 set pass = '01HJTEBG4Y1EAXPATENCDCT7WW';

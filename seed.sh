@@ -19,6 +19,7 @@ main() {
   info_db=$(sql "$ns" "main" "INFO FOR DB;")
 
   inject_functions "$ns" "$db" "$info_db"
+  inject_scopes "$ns" "$db" "$info_db"
   inject_tables "$ns" "$db" "$info_db"
 
   # inject data
@@ -82,6 +83,24 @@ inject_tables() {
         sql "$ns" "$db" "$field;" | jq '.[] | .status + " " + .time'
       done
 
+    fi
+  done
+}
+
+inject_scopes() {
+  ns="$1"
+  db="$2"
+  info_db="$3"
+
+  keys=$(echo "$info_db" | jq '.[].result.scopes' | jq 'keys')
+
+  for r_key in $keys; do
+    if [ $r_key != "[" ] && [ $r_key != "]" ]; then
+      key=$(echo $r_key | sed 's/\"//g' | sed 's/,//g' | sed 's/ //g')
+      scope=$(echo "$info_db" | jq -r '.[].result.scopes.'$key)
+
+      printf "\033[0;36mInjecting scopes:\033[0m \n\t$key: "
+      sql "$ns" "$db" "$scope;" | jq '.[] | .status + " " + .time'
     fi
   done
 }

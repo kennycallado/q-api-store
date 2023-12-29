@@ -2,8 +2,10 @@
 DEFINE TABLE users SCHEMAFULL PERMISSIONS NONE;
 
 -- fields
--- DEFINE FIELD active   ON TABLE users TYPE bool DEFAULT false;
--- DEFINE FIELD project  ON TABLE users TYPE record<projects> ASSERT $value IN (SELECT VALUE id FROM projects);
+-- WARNING: pass is always crypted
+-- DEFINE FIELD pass   ON TABLE users TYPE string;
+DEFINE FIELD pass   ON TABLE users TYPE string VALUE crypto::argon2::generate($value);
+DEFINE FIELD active ON TABLE users TYPE option<bool> DEFAULT false;
 
 -- indexes
 

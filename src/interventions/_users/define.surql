@@ -1,10 +1,12 @@
 -- table
-DEFINE TABLE users SCHEMAFULL PERMISSIONS NONE;
+DEFINE TABLE users SCHEMAFULL PERMISSIONS
+  FOR select WHERE $auth.admin;
 
 -- fields
 -- WARNING: pass is always crypted
 -- DEFINE FIELD pass   ON TABLE users TYPE string;
 DEFINE FIELD pass   ON TABLE users TYPE string VALUE crypto::argon2::generate($value);
+DEFINE FIELD admin  ON TABLE users TYPE option<bool> DEFAULT false;
 DEFINE FIELD active ON TABLE users TYPE option<bool> DEFAULT false;
 
 -- indexes

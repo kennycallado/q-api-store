@@ -20,6 +20,13 @@ main() {
           for file in "$folder"*.surql; do
             inject "$ns" "main" "$file"
           done
+        else if [ "$folder" == "_users/" ]; then
+
+          for file in "$folder"*.surql; do
+            if [ "$file" == "${folder}define.surql" ]; then
+              inject "$ns" "main" "$file"
+            fi
+          done
         else
 
           for folder_in in "$folder"*/; do
@@ -27,6 +34,7 @@ main() {
               inject "$ns" "main" "$file"
             done
           done
+        fi
         fi
       else # profiles and user_project
 

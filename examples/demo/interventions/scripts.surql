@@ -21,13 +21,12 @@ switch(user.score.step) {
 
 
     /** modification */
-    // user.score = { step: 2, mood: 0, state: "lift-off" };
     user.score.step = 2;
     user.score.state = "lift-off";
 
     /** action */
-    user.actions.push({ action: "resource_completed", params: ["module-1"] });
-    user.actions.push({ action: "add_resource", params: ["form-1"] });
+    user.resource_completed("module-1");
+    user.add_resource("form-1");
 
     break;
 
@@ -37,9 +36,8 @@ switch(user.score.step) {
     user.score.step = 3;
 
     /** action */
-    user.actions.push({ action: "resource_completed", params: ["form-1"] });
-    user.actions.push({ action: "add_resource", params: ["slides-1"] });
-    user.actions.push({ action: "add_resource", params: ["slides-2"] });
+    user.resource_completed("form-1");
+    user.add_resource(["slides-1", "slides-2"]);
 
     break;
 
@@ -56,13 +54,11 @@ switch(user.score.step) {
     /** validation */
 
     /** modification */
-    // user.score = { step: 4, mood: 0, state: "orbit" };
     user.score.step = 4;
     user.score.state =  "orbit";
 
     /** action */
-    user.actions.push({ action: "resource_completed", params: ["slides-1"] });
-    user.actions.push({ action: "resource_completed", params: ["slides-2"] });
+    user.resource_completed(["slides-1", "slides-2"])
 
     break;
 
@@ -70,7 +66,6 @@ switch(user.score.step) {
     /** validation */
 
     /** modification */
-    // user.score = { step: 5, mood: 0, state: "landed" };
     user.score.step =  5;
     user.score.state = "landed";
     
@@ -83,12 +78,11 @@ switch(user.score.step) {
     /** validation */
 
     /** modification */
-    // user.score = { step: 1, mood: 0, state: "ignition" };
     user.score.step = 1;
     user.score.state = "ignition";
 
     /** action */
-    user.actions.push({ action: "add_resource", params: ["module-1"] });
+    user.add_resource("module-1");
 
     break;
 

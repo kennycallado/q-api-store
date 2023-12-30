@@ -9,7 +9,7 @@ NS: user_project
 DB: main
 Accept: application/json
 
-## IMPORT DUMP
+## NOTE: DUMP
 # -u "root:root" \
 cat ./src/content/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: interventions' -H 'DB: main' --data-binary @- http://localhost:8000/import &> /dev/null
 cat ./src/outcomes/dump.surql | curl -X 'POST' -H 'Accept: application/json' -H 'NS: interventions' -H 'DB: main'    --data-binary @- http://localhost:8000/import &> /dev/null
@@ -25,9 +25,9 @@ NS: interventions
 DB: main
 Accept: application/json
 
-###
--u "root:root@lab" \
+# NOTE: user and pass
 curl -X POST \
+  -u "" \
   -H "NS: interventions" \
   -H "DB: main" \
   -H "Accept: application/json" \

@@ -1,10 +1,13 @@
 # TODO:
 
+- [X] scripts: ??? should be at content
+- [ ] scope: there are some places like **answers** where
+             the users will be no able to access from
+             the server.
 - [ ] user_project: user.project should be equal
-- [ ] seed: repensar como debe funcionar examples y seed
-- [ ] DOCS: improve the docs
-- [ ] resources: optional script, result of the script in the paper?
 - [ ] 0.2.0: ??? wrap with rust
+- [X] seed: repensar como debe funcionar examples y seed
+- [ ] resources: optional script, result of the script in the paper?
 - [X] slides: add media:2 to slides:1
 - [X] ? gitignore dump and seeds ?
 - [X] surrealdb: version nightly until 1.1.0

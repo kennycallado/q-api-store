@@ -1,0 +1,51 @@
+
+5,$s/<token>//g
+5,$s//<token>/g
+
+POST http://localhost:8000/signin
+Accept: application/json
+Content-Type: application/json
+
+{
+  "ns": "interventions",
+  "db": "demo",
+  "sc": "user",
+  "pass": "01HJTEBG4Y1EAXPATENCDCT7WW"
+}
+
+## pass ⬇️
+GET http://localhost:8000/key/papers
+Accept: application/json
+Authorization: Bearer <token>
+
+GET http://localhost:8000/key/papers/43rrwb5kdpyxdtk0m54d
+Accept: application/json
+Authorization: Bearer <token>
+
+PATCH http://localhost:8000/key/papers/43rrwb5kdpyxdtk0m54d
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "answers": ["answers:1"]
+}
+
+## fails ⬇️
+GET http://localhost:8000/key/papers
+Accept: application/json
+
+DELETE http://localhost:8000/key/papers/1
+Accept: application/json
+Authorization: Bearer <token>
+
+POST http://localhost:8000/key/papers
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "answers": [],
+  "resource": "resources:1",
+  "user": "users:1"
+}

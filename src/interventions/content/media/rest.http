@@ -1,0 +1,51 @@
+
+5,$s/<token>//g
+5,$s//<token>/g
+
+POST http://localhost:8000/signin
+Accept: application/json
+Content-Type: application/json
+
+{
+  "ns": "interventions",
+  "db": "demo",
+  "sc": "user",
+  "pass": "01HJTEBG4Y1EAXPATENCDCT7WW"
+}
+
+## pass ⬇️
+GET http://localhost:8000/key/media
+Accept: application/json
+Authorization: Bearer <token>
+
+GET http://localhost:8000/key/media/1
+Accept: application/json
+Authorization: Bearer <token>
+
+## fails ⬇️
+GET http://localhost:8000/key/media
+Accept: application/json
+
+DELETE http://localhost:8000/key/media/1
+Accept: application/json
+Authorization: Bearer <token>
+
+POST http://localhost:8000/key/media
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "alt": "Blah",
+  "type": "image",
+  "url": "https://kennycalldo.dev/"
+}
+
+PATCH http://localhost:8000/key/media/1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "type": "video"
+}

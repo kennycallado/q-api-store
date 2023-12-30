@@ -1,0 +1,53 @@
+
+5,$s/<token>//g
+5,$s//<token>/g
+
+POST http://localhost:8000/signin
+Accept: application/json
+Content-Type: application/json
+
+{
+  "ns": "interventions",
+  "db": "demo",
+  "sc": "user",
+  "pass": "01HJTEBG4Y1EAXPATENCDCT7WW"
+}
+
+## pass ⬇️
+GET http://localhost:8000/key/scores
+Accept: application/json
+Authorization: Bearer <token>
+
+GET http://localhost:8000/key/scores/f9gnbg1lhxx3fxobt9gm
+Accept: application/json
+Authorization: Bearer <token>
+
+## fails ⬇️
+GET http://localhost:8000/key/scores
+Accept: application/json
+
+DELETE http://localhost:8000/key/scores/1
+Accept: application/json
+Authorization: Bearer <token>
+
+POST http://localhost:8000/key/scores
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "score": {
+    "state": "ignition",
+    "step": 10
+  },
+  "user": "users:1"
+}
+
+PATCH http://localhost:8000/key/scores/f9gnbg1lhxx3fxobt9gm
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "score": { "step": 20 }
+}

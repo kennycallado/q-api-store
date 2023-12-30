@@ -1,0 +1,52 @@
+
+5,$s/<token>//g
+5,$s//<token>/g
+
+POST http://localhost:8000/signin
+Accept: application/json
+Content-Type: application/json
+
+{
+  "ns": "interventions",
+  "db": "demo",
+  "sc": "user",
+  "pass": "01HJTEBG4Y1EAXPATENCDCT7WW"
+}
+
+## pass ⬇️
+GET http://localhost:8000/key/slides
+Accept: application/json
+Authorization: Bearer <token>
+
+GET http://localhost:8000/key/slides/1
+Accept: application/json
+Authorization: Bearer <token>
+
+## fails ⬇️
+GET http://localhost:8000/key/slides
+Accept: application/json
+
+DELETE http://localhost:8000/key/slides/1
+Accept: application/json
+Authorization: Bearer <token>
+
+POST http://localhost:8000/key/slides
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "content": "Lorem",
+  "media": "media:1",
+  "title": "foo",
+  "type": "content"
+}
+
+PATCH http://localhost:8000/key/slides/1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "type": "bar"
+}

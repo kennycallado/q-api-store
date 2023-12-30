@@ -1,0 +1,54 @@
+
+5,$s/<token>//g
+5,$s//<token>/g
+
+POST http://localhost:8000/signin
+Accept: application/json
+Content-Type: application/json
+
+{
+  "ns": "interventions",
+  "db": "demo",
+  "sc": "user",
+  "pass": "01HJTEBG4Y1EAXPATENCDCT7WW"
+}
+
+## pass ⬇️
+## fails ⬇️
+
+## PDT: revisar permisos, maybe add user field or
+##      add user relation and query from there.
+
+POST http://localhost:8000/key/answers
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "question": "questions:1",
+  "answer": "1"
+}
+
+GET http://localhost:8000/key/answers
+Accept: application/json
+Authorization: Bearer <token>
+
+GET http://localhost:8000/key/answers/1
+Accept: application/json
+Authorization: Bearer <token>
+
+GET http://localhost:8000/key/answers
+Accept: application/json
+
+DELETE http://localhost:8000/key/answers/1
+Accept: application/json
+Authorization: Bearer <token>
+
+PATCH http://localhost:8000/key/answers/1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "type": "bar"
+}

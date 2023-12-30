@@ -1,0 +1,20 @@
+
+# on_cron
+curl -sS -X POST \
+  -u "root:root" \
+  -H "NS: interventions" \
+  -H "DB: demo" \
+  -H "Accept: application/json" \
+  -d "fn::on_cron('steps')" \
+  http://localhost:8000/sql | jq '.[].result'
+  
+# on_push
+curl -sS -X POST \
+  -u "root:root" \
+  -H "NS: interventions" \
+  -H "DB: demo" \
+  -H "Accept: application/json" \
+  -d "fn::on_push((SELECT * FROM papers WHERE user = users:1 ORDER BY created DESC LIMIT 1)[0]);" \
+  http://localhost:8000/sql | jq '.[].result'
+  
+#

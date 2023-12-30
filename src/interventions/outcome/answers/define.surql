@@ -1,5 +1,8 @@
 -- table
-DEFINE TABLE answers SCHEMAFULL PERMISSIONS NONE;
+DEFINE TABLE answers SCHEMAFULL PERMISSIONS
+  FOR select WHERE $auth.admin,
+  FOR create, update WHERE $auth.id
+  ;
 
 -- fields
 DEFINE FIELD answer   ON TABLE answers TYPE string;

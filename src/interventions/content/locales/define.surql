@@ -1,5 +1,6 @@
 -- table
-DEFINE TABLE locales SCHEMAFULL PERMISSIONS NONE;
+DEFINE TABLE locales SCHEMAFULL PERMISSIONS
+  FOR select WHERE $auth.id;
 
 -- fields
 -- -- ISO 639-1

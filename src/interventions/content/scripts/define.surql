@@ -1,5 +1,6 @@
 -- table
-DEFINE TABLE scripts SCHEMAFULL PERMISSIONS NONE;
+DEFINE TABLE scripts SCHEMAFULL PERMISSIONS
+  FOR select WHERE $auth.id;
 
 -- fields
 DEFINE FIELD name ON TABLE scripts TYPE string;

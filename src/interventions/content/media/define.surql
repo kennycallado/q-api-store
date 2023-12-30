@@ -1,5 +1,6 @@
 -- table
-DEFINE TABLE media SCHEMAFULL PERMISSIONS NONE;
+DEFINE TABLE media SCHEMAFULL PERMISSIONS
+  FOR select WHERE $auth.id;
 
 -- fields
 DEFINE FIELD alt  ON TABLE media TYPE option<string>;

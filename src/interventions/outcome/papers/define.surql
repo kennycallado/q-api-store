@@ -1,5 +1,8 @@
 -- table
-DEFINE TABLE papers SCHEMAFULL PERMISSIONS NONE;
+DEFINE TABLE papers SCHEMAFULL PERMISSIONS
+  FOR select WHERE $auth.admin OR user = $auth.id,
+  FOR update WHERE user = $auth.id
+ ;
 
 -- fields
 DEFINE FIELD user       ON TABLE papers TYPE record<users>;

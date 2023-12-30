@@ -1,8 +1,9 @@
 -- table
-DEFINE TABLE questions SCHEMAFULL PERMISSIONS NONE;
+DEFINE TABLE questions SCHEMAFULL PERMISSIONS
+  FOR select WHERE $auth.id;
 
 -- fields
-DEFINE FIELD type   ON TABLE questions TYPE string ASSERT $value INSIDE ['range', 'input'];
+DEFINE FIELD type   ON TABLE questions TYPE string ASSERT $value INSIDE ['range', 'text'];
 DEFINE FIELD range  ON TABLE questions TYPE option<object> ASSERT $value IS NONE OR type = 'range';
 
 -- -- range

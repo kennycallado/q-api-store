@@ -1,5 +1,6 @@
 -- table
-DEFINE TABLE slides SCHEMAFULL PERMISSIONS NONE;
+DEFINE TABLE slides SCHEMAFULL PERMISSIONS
+  FOR select WHERE $auth.id;
 
 -- fields
 DEFINE FIELD title    ON TABLE slides TYPE string;

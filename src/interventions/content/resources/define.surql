@@ -1,5 +1,6 @@
 -- table
-DEFINE TABLE resources SCHEMAFULL PERMISSIONS NONE;
+DEFINE TABLE resources SCHEMAFULL PERMISSIONS
+  FOR select WHERE $auth.id;
 
 -- fields
 -- ref should be with the project id

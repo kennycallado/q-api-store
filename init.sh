@@ -54,7 +54,11 @@ inject() {
   local db=$2
   local file=$3
 
-  echo "$file"
+  # should be temporary solution
+  if [[ "$file" == *"create"* ]]; then
+    return
+  fi
+
   if [ -f "$file" ]; then
     curl $db_user -sS -X 'POST' -H 'Accept: application/json' -H "NS: $ns" -H "DB: $db" --data-binary @"$file" "$db_url/import" | jq '.[] | .status + " " + .time'
   else

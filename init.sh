@@ -7,8 +7,7 @@ db_url="http://localhost:8000"
 db_user="-u root:root"
 
 main() {
-  # profiles is temporary in db
-  local namespaces=("profiles" "interventions" "user_project")
+  local namespaces=("global" "interventions")
 
   for ns in "${namespaces[@]}"; do
     cd "src/$ns"

@@ -14,8 +14,8 @@
 
 ### NS:
 
+- global
 - interventions
-- user_project
 
 #### _functions:
 

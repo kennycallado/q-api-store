@@ -1,21 +1,21 @@
 
 GET http://localhost:8000/export
-NS: user_project
+NS: global
 DB: main
 Accept: application/json
 
 GET http://localhost:8000/key/projects
-NS: user_project
+NS: global
 DB: main
 Accept: application/json
 
 GET http://localhost:8000/key/users
-NS: user_project
+NS: global
 DB: main
 Accept: application/json
 
 POST http://localhost:8000/key/users
-NS: user_project
+NS: global
 DB: main
 Accept: application/json
 

@@ -5,7 +5,7 @@ DB: main
 Accept: application/json
 
 GET http://localhost:8000/export
-NS: user_project
+NS: global
 DB: main
 Accept: application/json
 

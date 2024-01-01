@@ -30,7 +30,7 @@ main() {
     db="$example"
 
     for file in `ls $folder`; do
-      if [ $ns == "user_project" ]; then
+      if [ $ns == "global" ]; then
         db="main"
       else
         db="$example"

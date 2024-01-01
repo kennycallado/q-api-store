@@ -1,10 +1,10 @@
 # TODO:
 
+- [X] global: rename user_project to global
 - [X] scripts: ??? should be at content
 - [ ] scope: there are some places like **answers** where
              the users will be no able to access from
              the server.
-- [ ] user_project: user.project should be equal
 - [ ] 0.2.0: ??? wrap with rust
 - [X] seed: repensar como debe funcionar examples y seed
 - [ ] resources: optional script, result of the script in the paper?

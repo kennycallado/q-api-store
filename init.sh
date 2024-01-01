@@ -14,32 +14,19 @@ main() {
 
     for folder in */; do
       if [ "$ns" == "interventions" ]; then
-        if [ "$folder" == "_scopes/" ]; then
 
-          for file in "$folder"*.surql; do
+        for folder_in in "$folder"*/; do
+          for file in "$folder_in"*.surql; do
+            echo "$file"
             inject "$ns" "main" "$file"
           done
-        else if [ "$folder" == "_users/" ]; then
+        done
+      else
 
-          for file in "$folder"*.surql; do
-            if [ "$file" == "${folder}define.surql" ]; then
-              inject "$ns" "main" "$file"
-            fi
-          done
-        else
-
-          for folder_in in "$folder"*/; do
-            for file in "$folder_in"*.surql; do
-              inject "$ns" "main" "$file"
-            done
-          done
-        fi
-        fi
-      else # profiles and user_project
-
-        if [ "$file" == "${folder}define.surql" ]; then
+        for file in "$folder"*.surql; do
+          echo "$file"
           inject "$ns" "main" "$file"
-        fi
+        done
       fi
     done
 

@@ -1,5 +1,6 @@
 # TODO:
 
+- [X] shared: a table to declare dependencies ???
 - [X] global: rename user_project to global
 - [X] scripts: ??? should be at content
 - [ ] scope: there are some places like **answers** where

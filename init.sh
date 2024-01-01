@@ -7,7 +7,7 @@ db_url="http://localhost:8000"
 db_user="-u root:root"
 
 main() {
-  local namespaces=("global" "interventions")
+  local namespaces=("global" "interventions" "shared") # shared should be after interventions
 
   for ns in "${namespaces[@]}"; do
     cd "src/$ns"
@@ -17,6 +17,12 @@ main() {
 
         for folder_in in "$folder"*/; do
           for file in "$folder_in"*.surql; do
+
+            if [ "$folder" == "aux/" ] || [ "$folder" == "content/" ]; then
+              echo "sharring $file"
+              inject "shared" "main" "$file"
+            fi
+
             echo "$file"
             inject "$ns" "main" "$file"
           done

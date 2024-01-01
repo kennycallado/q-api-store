@@ -19,7 +19,8 @@ main() {
   echo -e "\tinjecting data"
   cd src
   for folder in */; do
-    ns=${folder%/}
+    local ns=${folder%/}
+
     inject $ns "main"
   done 
   cd ..
@@ -35,9 +36,9 @@ main() {
 }
 
 inject() {
-  ns=$1
-  db=$2
-  file="${ns}/dump.surql"
+  local ns=$1
+  local db=$2
+  local file="${ns}/dump.surql"
 
   if [ -f "$file" ]; then
     curl -sS -X 'POST' -H 'Accept: application/json' -H "NS: $ns" -H "DB: $db" --data-binary @"$file" "$db_url/import" | jq '.[] | .status + " " + .time'
@@ -91,7 +92,7 @@ create_images() {
     echo "Building docker image for: $platform."
 
     # get the tag
-    tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
+    local tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
 
     # build the image
     podman build --platform ${platform} -t kennycallado/surreal:${version}-${tag} -f Containerfile .
@@ -114,13 +115,14 @@ create_images() {
     echo "Createing the latest manifest"
     podman manifest create kennycallado/surreal:latest
     for platform in ${platforms[@]}; do
-      tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
+      local tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
       podman manifest add --arch ${tag} kennycallado/surreal:latest kennycallado/surreal:${version}-${tag}
 
       podman manifest add --arch ${platform#*/} kennycallado/surreal:latest kennycallado/surreal:${version}-${tag}
     done
 
     echo "Pushing the manifests..."
+    # and remove them
     podman manifest push --rm kennycallado/surreal:$version docker://kennycallado/surreal:$version
     podman manifest push --rm kennycallado/surreal:latest docker://kennycallado/surreal:latest
   fi
@@ -129,14 +131,10 @@ create_images() {
 clean_up() {
   echo "Removing the images..."
   for platform in ${platforms[@]}; do
-    tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
+    local tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
+
     podman rmi kennycallado/surreal:${version}-${tag}
   done
-
-  if [ $publish == true ]; then
-    podman rmi kennycallado/surreal:$version
-    podman rmi kennycallado/surreal:latest
-  fi
 
   echo "Cleaning up the manifest..."
   podman system prune -f

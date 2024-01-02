@@ -14,7 +14,7 @@ curl -sS -X POST \
   -H "NS: interventions" \
   -H "DB: demo" \
   -H "Accept: application/json" \
-  -d "fn::on_push((SELECT * FROM papers WHERE user = users:1 ORDER BY created DESC LIMIT 1)[0]);" \
+  -d "fn::on_push((SELECT id, created FROM papers WHERE user = users:1 ORDER BY created DESC LIMIT 1)[0].id, []);" \
   http://localhost:8000/sql | jq '.[].result'
   
 #

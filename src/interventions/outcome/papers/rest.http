@@ -18,17 +18,17 @@ GET http://localhost:8000/key/papers
 Accept: application/json
 Authorization: Bearer <token>
 
-GET http://localhost:8000/key/papers/43rrwb5kdpyxdtk0m54d
+GET http://localhost:8000/key/papers/<id>
 Accept: application/json
 Authorization: Bearer <token>
 
-PATCH http://localhost:8000/key/papers/43rrwb5kdpyxdtk0m54d
+PATCH http://localhost:8000/key/papers/<id>
 Accept: application/json
 Content-Type: application/json
 Authorization: Bearer <token>
 
 {
-  "answers": ["answers:1"]
+  "completed": true
 }
 
 ## fails ⬇️

@@ -26,6 +26,7 @@ Authorization: Bearer <token>
 
 {
   "question": "questions:1",
+  "user": "users:1",
   "answer": "1"
 }
 
@@ -50,5 +51,5 @@ Content-Type: application/json
 Authorization: Bearer <token>
 
 {
-  "type": "bar"
+  "answer": "5"
 }

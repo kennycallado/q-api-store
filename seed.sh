@@ -75,6 +75,10 @@ inject_tables() {
   db="$2"
   info_db="$3"
 
+  if [ "$(echo "$info_db" | jq '.[].result.tables')" == "{}" ]; then
+    return
+  fi
+
   keys=$(echo "$info_db" | jq '.[].result.tables' | jq 'keys')
 
   for r_key in $keys; do
@@ -120,6 +124,10 @@ inject_scopes() {
   db="$2"
   info_db="$3"
 
+  if [ "$(echo "$info_db" | jq '.[].result.scopes')" == "{}" ]; then
+    return
+  fi
+
   keys=$(echo "$info_db" | jq '.[].result.scopes' | jq 'keys')
 
   for r_key in $keys; do
@@ -137,6 +145,10 @@ inject_functions() {
   ns="$1"
   db="$2"
   info_db="$3"
+
+  if [ "$(echo "$info_db" | jq '.[].result.functions')" == "{}" ]; then
+    return
+  fi
 
   keys=$(echo "$info_db" | jq '.[].result.functions' | jq 'keys')
 

@@ -100,8 +100,10 @@ inject_tables() {
       sql "$ns" "$db" "$define_table;" | jq '.[] | .status + " " + .time'
 
       # inject events
-      table_events=$(echo "$info_table" | jq '.[].result.events | map(.)' | jq -r '.[]')
-      echo "$table_events" | while read r_event; do
+      table_events=$(echo "$info_table" | jq '.[].result.events | map(.)')
+      r_events=$(echo $table_events | sed 's/\[ //g' | sed 's/]//g' | sed 's/\", /"\n/' | sed 's/\\n//g')
+
+      echo "$r_events" | while read r_event; do
         event=$(echo "$r_event" | sed 's/\"//g')
         printf "  \033[0;33mDefine event:\033[0m \n\t$(echo $event | awk '{print $3}'): "
         sql "$ns" "$db" "$event;" | jq '.[] | .status + " " + .time'

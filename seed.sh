@@ -19,6 +19,7 @@ main() {
   info_db=$(sql "$ns" "main" "INFO FOR DB;")
 
   inject_functions "$ns" "$db" "$info_db"
+  inject_params "$ns" "$db" "$info_db"
   inject_scopes "$ns" "$db" "$info_db"
   inject_tables "$ns" "$db" "$info_db"
 
@@ -44,6 +45,28 @@ main() {
   done
 
   cd "$pwd"
+}
+
+inject_params() {
+  ns="$1"
+  db="$2"
+  info_db="$3"
+
+  if [ "$(echo "$info_db" | jq '.[].result.params')" == "{}" ]; then
+    return
+  fi
+
+  keys=$(echo "$info_db" | jq '.[].result.params' | jq 'keys')
+
+  echo "$keys" | while read r_key; do
+    if [ $r_key != "[" ] && [ $r_key != "]" ]; then
+      key=$(echo $r_key | sed 's/\"//g' | sed 's/,//g' | sed 's/ //g')
+      param=$(echo "$info_db" | jq -r '.[].result.params.'$key)
+
+      printf "\033[0;32mInjecting param:\033[0m \n\t$key: "
+      sql "$ns" "$db" "$param;" | jq '.[] | .status + " " + .time'
+    fi
+  done
 }
 
 inject_tables() {

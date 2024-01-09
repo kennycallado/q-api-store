@@ -11,8 +11,9 @@ main() {
   ns="interventions"
   db="$example"
 
-  if [ -z "$example" ]; then
-    echo "Example not found"
+  # check example exist
+  if [ ! -d "examples/$example" ]; then
+    echo -e "\033[0;31mFolder not exist:\033[0m examples/$example"
     exit 1
   fi
 

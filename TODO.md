@@ -1,9 +1,24 @@
 # TODO:
 
+- [ ] toggle_active ??
+
+- [ ] create a client db for migrations
+  - [ ] main: change main for server
+  - [ ] client: create client migrations (?no extras)
+  - [ ] admin: create admint migrations  (?some estras)
+
+- [X] seed: fix evetns injection
+- [X] seed: first check if the example exists
+- [~] $secret: inject secret, needed for papers...
+  - ?? should be defined on a job
+  - ?? should be copied when seed a new database
+
 - [X] shared: a table to declare dependencies ???
+  - not sure that it is needed.. when move to shared
+    copy all dependencies...
 - [X] global: rename user_project to global
 - [X] scripts: ??? should be at content
-- [ ] scope: there are some places like **answers** where
+- [X] scope: there are some places like **answers** where
              the users will be no able to access from
              the server.
 - [ ] 0.2.0: ??? wrap with rust

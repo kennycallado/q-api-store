@@ -1,48 +1,45 @@
 -- table
 DEFINE TABLE papers SCHEMAFULL PERMISSIONS
-  FOR select WHERE $auth.admin OR user = $auth.id,
-  FOR update WHERE user = $auth.id
- ;
+  FOR select WHERE user = $auth.id OR $auth.admin,
+  FOR create, update WHERE user = $auth.id
+  ;
 
 -- fields
-DEFINE FIELD user       ON TABLE papers TYPE record<users>;
-DEFINE FIELD created    ON TABLE papers TYPE datetime DEFAULT time::now();
-DEFINE FIELD resource   ON TABLE papers TYPE record<resources>;
+DEFINE FIELD user       ON TABLE papers TYPE record<users>                PERMISSIONS FOR update NONE;
+DEFINE FIELD lock       ON TABLE papers TYPE bool DEFAULT true            PERMISSIONS FOR select NONE;
+DEFINE FIELD created    ON TABLE papers TYPE datetime DEFAULT time::now() PERMISSIONS FOR update NONE;
+DEFINE FIELD resource   ON TABLE papers TYPE record<resources>            PERMISSIONS FOR update NONE;
 DEFINE FIELD completed  ON TABLE papers TYPE bool DEFAULT false;
 
 DEFINE FIELD answers    ON TABLE papers TYPE option<array<record>> DEFAULT [];
-DEFINE FIELD answers[*] ON TABLE papers TYPE record<answers>;
+DEFINE FIELD answers[*] ON TABLE papers TYPE record<answers> ASSERT $value IN (SELECT id FROM answers WHERE user = $value.user);
 
 -- indexes
 
 -- events
--- DEFINE EVENT p_create_paper ON TABLE papers WHEN $event IS "CREATE" THEN {
---   RELATE $project->create_paper->$value;
--- };
+DEFINE EVENT prevent_update ON TABLE papers WHEN $event IS "UPDATE" THEN {
+  IF $auth.id {
+    IF $before.lock IS false AND $value.lock IS true {
+      RETURN ;
+    } ELSE IF $value.lock IS true {
+      THROW "Should use: fn::on_push($paper_id: record, $answers: array<record<answers>>)";
+    };
+  };
+  
+  function() { console.log('update') };
+};
 
--- DEFINE event u_update_paper ON TABLE papers WHEN $event IS "UPDATE" THEN {
---   LET $user = $auth.id;
+DEFINE EVENT prevent_create ON TABLE papers WHEN $event IS "CREATE" THEN {
+  IF $auth.id {
+    IF $value.lock IS true {
+      THROW "Should use: fn::on_push($paper_id: record, $answers: array<record<answers>>)";
+    };
+  } ELSE {
+    UPDATE $value SET lock = true;
+  };
 
---   IF $user != NONE {
---     -- prevent user from update something else
---     IF $value.completed != $before.completed
---     OR $value.resource  != $before.resource
---     OR $value.user      != $before.user {
---       CREATE logs SET index = $before.id, event = "ERROR: update not allowed", time = time::now();
-
---       THROW "Changes not allowed"
---     };
-
---     -- execute script
---     fn::on_push($value);
---   };
-
---   -- borrar: just for testing
---   IF $value.completed = false {
---     $value = fn::on_push($value);
---   };
-
--- };
+  function() { console.log('create') };
+};
 
 DEFINE EVENT papers_log ON TABLE papers WHEN $event IS "CREATE" OR $event IS "UPDATE" OR $event IS "DELETE" THEN {
   IF $event = 'DELETE' {

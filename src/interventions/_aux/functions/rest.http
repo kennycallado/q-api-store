@@ -17,4 +17,14 @@ curl -sS -X POST \
   -d "fn::on_push((SELECT id, created FROM papers WHERE user = users:1 ORDER BY created DESC LIMIT 1)[0].id, []);" \
   http://localhost:8000/sql | jq '.[].result'
   
+# test
+-u "root:root" \
+curl -sS -X POST \
+  -H "Authorization: Basic dXNlcm5hbWU6MTIzNDU2" \
+  -H "NS: interventions" \
+  -H "DB: demo" \
+  -H "Accept: application/json" \
+  -d "INFO FOR DB" \
+  http://localhost:8000/sql | jq '.[].result'
+  
 #

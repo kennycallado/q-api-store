@@ -1,6 +1,8 @@
 -- table
 DEFINE TABLE users SCHEMAFULL PERMISSIONS
-  FOR select WHERE $auth.admin;
+  FOR select WHERE $auth.admin,
+  FOR update WHERE $auth.admin OR id = $auth.id
+  ;
 
 -- fields
 -- WARNING: pass is always crypted

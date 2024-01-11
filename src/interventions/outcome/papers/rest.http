@@ -35,7 +35,7 @@ Authorization: Bearer <token>
 GET http://localhost:8000/key/papers
 Accept: application/json
 
-DELETE http://localhost:8000/key/papers/1
+DELETE http://localhost:8000/key/papers/<id>
 Accept: application/json
 Authorization: Bearer <token>
 

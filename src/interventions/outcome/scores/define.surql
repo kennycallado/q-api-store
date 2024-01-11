@@ -1,6 +1,7 @@
 -- table
 DEFINE TABLE scores SCHEMAFULL PERMISSIONS
-  FOR select WHERE $auth.admin OR user = $auth.id;
+  FOR select WHERE $auth.admin OR user = $auth.id,
+  FOR create WHERE user = $auth.id;
 
 -- fields
 DEFINE FIELD user     ON TABLE scores TYPE record<users>;

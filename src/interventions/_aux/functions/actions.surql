@@ -35,9 +35,13 @@ DEFINE FUNCTION fn::actions($paper: option<object>, $user: object) {
         LET $resource_id = (SELECT VALUE id FROM resources WHERE ref = $ref)[0];
 
         -- create paper
-        CREATE papers CONTENT { user: type::thing($user.id), resource: $resource_id };
-
+        CREATE papers CONTENT { user: type::thing($user.id), resource: $resource_id, lock: false };
       };
+    };
+
+-- toggle_active
+    if $action.action = "toggle_active" {
+      UPDATE $user.id SET active = !active;
     };
 
 -- user_active

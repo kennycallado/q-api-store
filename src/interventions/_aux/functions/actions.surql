@@ -15,7 +15,7 @@ DEFINE FUNCTION fn::actions($paper: option<object>, $user: object) {
         LET $resource_id = (SELECT VALUE id FROM resources WHERE ref = $ref)[0];
 
         -- update paper
-        IF $paper.resource = $resource.id {
+        IF $paper.resource = $resource_id {
           UPDATE $paper.id SET completed = true;
         } ELSE {
           -- can fails if the ref is not found

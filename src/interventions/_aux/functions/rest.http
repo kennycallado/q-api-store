@@ -18,9 +18,12 @@ curl -sS -X POST \
   http://localhost:8000/sql | jq '.[].result'
   
 # test
+-H "Authorization: Basic dXNlcm5hbWU6MTIzNDU2" \ # ?? Authorization
+-H "Authorization: Basic cm9vdDpyb290" \
 -u "root:root" \
+
 curl -sS -X POST \
-  -H "Authorization: Basic dXNlcm5hbWU6MTIzNDU2" \
+  -H "Authorization: Basic <TOKEN>" \
   -H "NS: interventions" \
   -H "DB: demo" \
   -H "Accept: application/json" \

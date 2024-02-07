@@ -2,6 +2,7 @@
 5,$s/<token>//g
 5,$s//<token>/g
 
+### AUTH
 POST http://localhost:8000/signin
 Accept: application/json
 Content-Type: application/json
@@ -14,22 +15,27 @@ Content-Type: application/json
 }
 
 ## pass ⬇️
+###
 GET http://localhost:8000/key/scripts
 Accept: application/json
 Authorization: Bearer <token>
 
+###
 GET http://localhost:8000/key/scripts/1
 Accept: application/json
 Authorization: Bearer <token>
 
 ## fails ⬇️
+###
 GET http://localhost:8000/key/scripts
 Accept: application/json
 
+###
 DELETE http://localhost:8000/key/scripts/1
 Accept: application/json
 Authorization: Bearer <token>
 
+###
 POST http://localhost:8000/key/scripts
 Accept: application/json
 Content-Type: application/json
@@ -40,6 +46,7 @@ Authorization: Bearer <token>
   "name": "foo"
 }
 
+###
 PATCH http://localhost:8000/key/scripts/1
 Accept: application/json
 Content-Type: application/json

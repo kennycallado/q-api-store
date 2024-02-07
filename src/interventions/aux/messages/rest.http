@@ -2,6 +2,7 @@
 5,$s/<token>//g
 5,$s//<token>/g
 
+### AUTH
 POST http://localhost:8000/signin
 Accept: application/json
 Content-Type: application/json
@@ -14,21 +15,26 @@ Content-Type: application/json
 }
 
 ## fails ⬇️
+###
 GET http://localhost:8000/key/messages
 Accept: application/json
 Authorization: Bearer <token>
 
+###
 GET http://localhost:8000/key/messages/"id"
 Accept: application/json
 Authorization: Bearer <token>
 
+###
 GET http://localhost:8000/key/messages
 Accept: application/json
 
+###
 DELETE http://localhost:8000/key/messages/"id"
 Accept: application/json
 Authorization: Bearer <token>
 
+###
 POST http://localhost:8000/key/messages
 Accept: application/json
 Content-Type: application/json
@@ -38,6 +44,7 @@ Authorization: Bearer <token>
   "locale": "fr"
 }
 
+###
 PATCH http://localhost:8000/key/messages/1rufwjkzqoknokxqmdqi
 Accept: application/json
 Content-Type: application/json

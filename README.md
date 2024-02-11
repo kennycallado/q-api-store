@@ -81,7 +81,7 @@ surreal sql --pretty -u root -p root --ns main --db <db>
 ```
 
 ``` bash
-podmas exec -it surrealdb /surreal sql --pretty --ns main --db <db>
+podman exec -it surrealdb /surreal sql --pretty --ns interventions --db <db>
 ```
 
 ## Initialize

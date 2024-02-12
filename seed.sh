@@ -101,17 +101,21 @@ inject_tables() {
 
       # inject events
       table_events=$(echo "$info_table" | jq '.[].result.events | map(.)')
-      r_events=$(echo $table_events | sed 's/\[ //g' | sed 's/]//g' | sed 's/\", /"\n/' | sed 's/\\n//g')
+      n_events=$(echo "$table_events" | jq -r 'length')
 
-      echo "$r_events" | while read r_event; do
+      for (( i=0; i<$n_events; i++ )); do
+        r_event=$(echo "$table_events" | jq -r ".[$i]")
         event=$(echo "$r_event" | sed 's/\"//g')
         printf "  \033[0;33mDefine event:\033[0m \n\t$(echo $event | awk '{print $3}'): "
         sql "$ns" "$db" "$event;" | jq '.[] | .status + " " + .time'
       done
 
       # inject fields
-      table_fields=$(echo "$info_table" | jq '.[].result.fields | map(.)')
-      echo "$table_fields" | jq '.[]' | while read r_field; do
+      table_fields=$(echo "$info_table" | jq -r '.[].result.fields | map(.)')
+      n_fields=$(echo "$table_fields" | jq 'length')
+
+      for (( i=0; i<$n_fields; i++ )); do
+        r_field=$(echo "$table_fields" | jq -r ".[$i]")
         field=$(echo "$r_field" | sed 's/\"//g')
         printf "  \033[0;35mDefine field:\033[0m \n\t$(echo $field | awk '{print $3}'): "
         sql "$ns" "$db" "$field;" | jq '.[] | .status + " " + .time'

@@ -12,31 +12,29 @@ DEFINE FIELD resource   ON TABLE papers TYPE record<resources>            PERMIS
 DEFINE FIELD completed  ON TABLE papers TYPE bool DEFAULT false;
 
 DEFINE FIELD answers    ON TABLE papers TYPE option<array<record>> DEFAULT [];
-DEFINE FIELD answers[*] ON TABLE papers TYPE record<answers> ASSERT $value IN (SELECT id FROM answers WHERE user = $value.user);
+DEFINE FIELD answers[*] ON TABLE papers TYPE record<answers> ASSERT $value IN (SELECT VALUE id FROM answers WHERE user = user);
 
 -- indexes
 
 -- events
 DEFINE EVENT prevent_update ON TABLE papers WHEN $event IS "UPDATE" THEN {
   IF $auth.id {
-    IF $before.lock IS false AND $value.lock IS true {
-      RETURN ;
-    } ELSE IF $value.lock IS true {
-      THROW "Should use: fn::on_push($paper_id: record, $answers: array<record<answers>>)";
-    };
+    IF $before.lock IS false AND $value.lock IS true { }
+    ELSE IF $value.lock IS true { THROW "Should use: fn::on_push($paper_id: record, $answers: option<array<record<answers>>>)"; };
   };
+
+  UPDATE $value SET lock = true; -- auto lock
   
   function() { console.log('update') };
 };
 
 DEFINE EVENT prevent_create ON TABLE papers WHEN $event IS "CREATE" THEN {
   IF $auth.id {
-    IF $value.lock IS true {
-      THROW "Should use: fn::on_push($paper_id: record, $answers: array<record<answers>>)";
-    };
-  } ELSE {
-    UPDATE $value SET lock = true;
+    IF $value.lock IS false { }
+    ELSE IF $value.lock IS true { THROW "Should use: fn::on_push($paper_id: record, $answers: option<array<record<answers>>>)"; };
   };
+
+  UPDATE $value SET lock = true; -- auto lock
 
   function() { console.log('create') };
 };

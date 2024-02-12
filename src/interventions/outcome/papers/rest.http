@@ -25,14 +25,15 @@ GET http://localhost:8000/key/papers/<id>
 Accept: application/json
 Authorization: Bearer <token>
 
-###
+### setting lock to true they pass
 PATCH http://localhost:8000/key/papers/<id>
 Accept: application/json
 Content-Type: application/json
 Authorization: Bearer <token>
 
 {
-  "completed": true
+  "completed": true,
+  "lock": true
 }
 
 ## fails ⬇️
@@ -54,5 +55,6 @@ Authorization: Bearer <token>
 {
   "answers": [],
   "resource": "resources:1",
-  "user": "users:1"
+  "user": "users:1",
+  "lock": false
 }

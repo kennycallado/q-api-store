@@ -1,4 +1,19 @@
 
+5,$s/<token>//g
+5,$s//<token>/g
+
+### AUTH
+POST http://localhost:8000/signin
+Accept: application/json
+Content-Type: application/json
+
+{
+  "ns": "interventions",
+  "db": "demo",
+  "sc": "user",
+  "pass": "01HJTEBG4Y1EAXPATENCDCT7WW"
+}
+
 # on_cron
 curl -sS -X POST \
   -u "root:root" \
@@ -23,11 +38,11 @@ curl -sS -X POST \
 -u "root:root" \
 
 curl -sS -X POST \
-  -H "Authorization: Basic <TOKEN>" \
+  -H "Authorization: Bearer <token>" \
   -H "NS: interventions" \
   -H "DB: demo" \
   -H "Accept: application/json" \
-  -d "INFO FOR DB" \
+  -d "fn::on_push(<papers:id>)" \
   http://localhost:8000/sql | jq '.[].result'
   
 #

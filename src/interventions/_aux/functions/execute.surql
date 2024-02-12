@@ -1,4 +1,4 @@
-DEFINE FUNCTION fn::execute($script: string, $user_id: record<users>, $paper: option<object>) {
+DEFINE FUNCTION fn::execute_script($script: string, $user_id: record<users>, $paper: option<object>) {
   -- validation
   -- paper optional because of on_cron could recive users whithout paper
 

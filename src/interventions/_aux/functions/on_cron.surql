@@ -8,12 +8,12 @@ DEFINE FUNCTION fn::on_cron($script: string) {
     IF $user.admin { CONTINUE };
 
     LET $paper = (SELECT * FROM papers WHERE user = $user ORDER BY created DESC LIMIT 1)[0];
-    LET $user = fn::execute($script, $user, $paper);
+    LET $user = fn::execute_script($script, $user, $paper);
 
     -- save score
     CREATE scores CONTENT { user: <record> $user.id, score: $user.score };
 
     -- perform actions
-    fn::actions($paper, $user);
+    fn::execute_actions($paper, $user);
   };
 };

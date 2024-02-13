@@ -10,7 +10,7 @@ db_file="data/surdb.db"
 db_version="v1.1.1"
 
 # podman
-platforms=("linux/amd64" "linux/arm64")
+platforms=("linux/arm64" "linux/amd64")
 
 main() {
   echo -e "\tinit container"

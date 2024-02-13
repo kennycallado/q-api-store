@@ -12,7 +12,7 @@ DEFINE FIELD resource   ON TABLE papers TYPE record<resources>            PERMIS
 DEFINE FIELD completed  ON TABLE papers TYPE bool DEFAULT false;
 
 DEFINE FIELD answers    ON TABLE papers TYPE option<array<record>> DEFAULT [];
-DEFINE FIELD answers[*] ON TABLE papers TYPE record<answers> ASSERT $value IN (SELECT VALUE id FROM answers WHERE user = user);
+DEFINE FIELD answers.* ON TABLE papers TYPE record<answers> ASSERT $value IN (SELECT VALUE id FROM answers WHERE user = user);
 
 -- indexes
 

@@ -95,7 +95,7 @@ create_images() {
     local tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
 
     # build the image
-    podman build --platform ${platform} -t kennycallado/surreal:${version}-${tag} -f Containerfile .
+    podman build --pull --no-cache --platform ${platform} -t kennycallado/surreal:${version}-${tag} -f Containerfile .
 
     if [ $publish == true ]; then
       podman push kennycallado/surreal:${version}-${tag}

@@ -14,13 +14,11 @@ DEFINE FIELD range.value  ON TABLE questions TYPE option<number> ASSERT $value I
 -- -- question
 -- waiting for between
 DEFINE FIELD question ON TABLE questions TYPE array<object> ASSERT array::len($value) < array::len(SELECT * FROM locales) + 1 AND array::len($value) > 0;
-DEFINE FIELD question.*         ON TABLE questions TYPE object;
 DEFINE FIELD question.*.locale  ON TABLE questions TYPE string ASSERT $value IN (SELECT VALUE locale FROM locales);
 DEFINE FIELD question.*.content ON TABLE questions TYPE string ASSERT $value IS NOT EMPTY AND string::len($value) < 250;
 
 -- should be: between range.min and range.max
-DEFINE FIELD question.*.spelled   ON TABLE questions TYPE option<array> ASSERT $value IS EMPTY OR type = 'range';
-DEFINE FIELD question.*.spelled.* ON TABLE questions TYPE string ASSERT $value IS NOT EMPTY;
+DEFINE FIELD question.*.spelled   ON TABLE questions TYPE option<array<string>> ASSERT $value IS EMPTY OR type = 'range';
 
 -- indexes
 

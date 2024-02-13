@@ -3,7 +3,6 @@ DEFINE TABLE resources SCHEMAFULL PERMISSIONS
   FOR select WHERE $auth.id;
 
 -- fields
--- ref should be with the project id
 DEFINE FIELD ref          ON TABLE resources TYPE string ASSERT $value IS NOT EMPTY VALUE string::slug($value);
 DEFINE FIELD description  ON TABLE resources TYPE string;
 DEFINE FIELD title        ON TABLE resources TYPE string ASSERT $value IS NOT EMPTY;
@@ -25,10 +24,6 @@ DEFINE FIELD slides.* ON TABLE resources TYPE record<slides>;
 DEFINE INDEX resources_ref_unique ON TABLE resources FIELDS ref UNIQUE;
 
 -- events
--- DEFINE EVENT p_create_resource ON TABLE resources WHEN $event = "CREATE" THEN {
---   RELATE $project->create_resource->$value;
--- };
-
 DEFINE EVENT resources_log ON TABLE resources WHEN $event = "CREATE" OR $event = "UPDATE" OR $event = "DELETE" THEN {
   IF $event = 'DELETE' {
     CREATE logs SET index = $before.id, event = $event, time = time::now();

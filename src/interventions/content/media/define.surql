@@ -10,10 +10,6 @@ DEFINE FIELD type ON TABLE media TYPE string ASSERT $value INSIDE ['image', 'vid
 -- indexes
 
 -- events
--- DEFINE EVENT p_create_media ON TABLE media WHEN $event = "CREATE" THEN {
---   RELATE $project->create_media->$value;
--- };
-
 DEFINE EVENT media_log ON TABLE media WHEN $event = "CREATE" OR $event = "UPDATE" OR $event = "DELETE" THEN {
   IF $event = 'DELETE' {
     CREATE logs SET index = $before.id, event = $event, time = time::now();

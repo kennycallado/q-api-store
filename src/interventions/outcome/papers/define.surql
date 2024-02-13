@@ -25,7 +25,7 @@ DEFINE EVENT prevent_update ON TABLE papers WHEN $event IS "UPDATE" THEN {
 
   UPDATE $value SET lock = true; -- auto lock
   
-  function() { console.log('update') };
+  -- function() { console.log('update') };
 };
 
 DEFINE EVENT prevent_create ON TABLE papers WHEN $event IS "CREATE" THEN {
@@ -36,7 +36,7 @@ DEFINE EVENT prevent_create ON TABLE papers WHEN $event IS "CREATE" THEN {
 
   UPDATE $value SET lock = true; -- auto lock
 
-  function() { console.log('create') };
+  -- function() { console.log('create') };
 };
 
 DEFINE EVENT papers_log ON TABLE papers WHEN $event IS "CREATE" OR $event IS "UPDATE" OR $event IS "DELETE" THEN {
@@ -44,5 +44,5 @@ DEFINE EVENT papers_log ON TABLE papers WHEN $event IS "CREATE" OR $event IS "UP
     CREATE logs SET index = $before.id, event = $event, time = time::now();
   } ELSE {
     CREATE logs SET index = $value.id, event = $event, time = time::now();
-  }
+  };
 };

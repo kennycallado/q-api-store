@@ -23,13 +23,8 @@ DEFINE FIELD question.*.spelled   ON TABLE questions TYPE option<array> ASSERT $
 DEFINE FIELD question.*.spelled.* ON TABLE questions TYPE string ASSERT $value IS NOT EMPTY;
 
 -- indexes
--- DEFINE INDEX questions_ref_index ON questions FIELDS ref UNIQUE;
 
 -- events
--- DEFINE EVENT p_create_question ON TABLE questions WHEN $event = "CREATE" THEN {
---   RELATE $project->create_question->$value;
--- };
-
 DEFINE EVENT questions_log ON TABLE questions WHEN $event = "CREATE" OR $event = "UPDATE" OR $event = "DELETE" THEN {
   IF $event = 'DELETE' {
     CREATE logs SET index = $before.id, event = $event, time = time::now();

@@ -1,0 +1,25 @@
+
+### AUTH
+POST http://localhost:8000/signin
+Accept: application/json
+Content-Type: application/json
+
+{
+  "ns": "global",
+  "db": "main",
+  "sc": "user",
+  "username": "kenny",
+  "password": "kenny"
+}
+
+POST http://localhost:8000/signup
+Accept: application/json
+Content-Type: application/json
+
+{
+  "ns": "global",
+  "db": "main",
+  "sc": "user",
+  "username": "kenny",
+  "password": "kenny"
+}

@@ -11,7 +11,7 @@ DEFINE FIELD state  ON TABLE projects TYPE string ASSERT $value IN ['development
 -- DEFINE FIELD database.domain ON TABLE projects TYPE option<string>;
 
 -- indexes
-DEFINE INDEX projects_name_index ON projects FIELDS name UNIQUE;
+DEFINE INDEX projects_name_index ON TABLE projects FIELDS name UNIQUE;
 
 -- events
 DEFINE EVENT projects_log ON TABLE projects WHEN $event = "CREATE" OR $event = "UPDATE" OR $event = "DELETE" THEN {

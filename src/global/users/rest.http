@@ -34,10 +34,10 @@ Authorization: Bearer <token>
 
 {
   "web_token": {
-    "endpoint": "http://localhost/",
-    "keys": {
-      "auth": "foo",
-      "p256dh": "bar"
+    "endpoint":"https://fcm.googleapis.com/fcm/send/e6mMuIMNpzw:APA91bGJaoDNMKXKIvO3oPjgUdC3kkwMihdSsAEMg1XyX6qA1yO3DpYaPuzth38foY-ER09xL6MvAALHJMcQmM9JRdt6QEh6l0Mvmvwy-yppEUVRFAIuxvdGJklbktgvqiXLz0XyjH_1",
+    "keys":{
+      "auth": "EFQMo1MUrpK1hkCSwtc5Dg",
+      "p256dh": "BNNUAaReIYG7kd4FuQ_wC07gPTnwHk32EOqXyAqlg2GleQE91gjclxOu9kwgLfxjcak_XYEGS586H8ZcP0hBo5k"
     }
   }
 }

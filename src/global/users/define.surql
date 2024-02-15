@@ -5,17 +5,17 @@ DEFINE TABLE users SCHEMAFULL PERMISSIONS
 ;
 
 -- fields
-DEFINE FIELD username ON users TYPE string PERMISSIONS FOR update NONE;
-DEFINE FIELD password ON users TYPE string PERMISSIONS FOR select, update NONE;
-DEFINE FIELD project  ON users TYPE option<record<projects>> PERMISSIONS FOR update NONE;
+DEFINE FIELD username ON TABLE users TYPE string PERMISSIONS FOR update NONE;
+DEFINE FIELD password ON TABLE users TYPE string PERMISSIONS FOR select, update NONE;
+DEFINE FIELD project  ON TABLE users TYPE option<record<projects>> PERMISSIONS FOR update NONE;
 
 -- DEFINE FIELD devices ON users TYPE array<record<devices>>;
 
-DEFINE FIELD web_token ON users FLEXIBLE TYPE option<object> DEFAULT {} PERMISSIONS FOR select WHERE $auth.admin;
-DEFINE FIELD web_token.endpoint    ON users TYPE option<string>;
-DEFINE FIELD web_token.keys        ON users TYPE option<object>;
-DEFINE FIELD web_token.keys.auth   ON users TYPE option<string>;
-DEFINE FIELD web_token.keys.p256dh ON users TYPE option<string>;
+DEFINE FIELD web_token ON TABLE users FLEXIBLE TYPE option<object> DEFAULT {} PERMISSIONS FOR select WHERE $auth.admin;
+DEFINE FIELD web_token.endpoint    ON TABLE users TYPE option<string>;
+DEFINE FIELD web_token.keys        ON TABLE users TYPE option<object>;
+DEFINE FIELD web_token.keys.auth   ON TABLE users TYPE option<string>;
+DEFINE FIELD web_token.keys.p256dh ON TABLE users TYPE option<string>;
 
 -- indexes
 DEFINE INDEX users_username ON TABLE users FIELDS username UNIQUE;

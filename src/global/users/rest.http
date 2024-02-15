@@ -1,0 +1,71 @@
+
+5,$s/<token>//g
+5,$s//<token>/g
+
+### AUTH
+POST http://localhost:8000/signin
+Accept: application/json
+Content-Type: application/json
+
+{
+  "ns": "global",
+  "db": "main",
+  "sc": "user",
+  "username": "kenny",
+  "password": "kenny"
+}
+
+## pass ⬇️
+###
+GET http://localhost:8000/key/users
+Accept: application/json
+Authorization: Bearer <token>
+
+###
+GET http://localhost:8000/key/users/<id>
+Accept: application/json
+Authorization: Bearer <token>
+
+###
+PATCH http://localhost:8000/key/users/<id>
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "web_token": {
+    "endpoint": "http://localhost/",
+    "keys": {
+      "auth": "foo",
+      "p256dh": "bar"
+    }
+  }
+}
+
+## fails ⬇️
+###
+DELETE http://localhost:8000/key/users/<id>
+Accept: application/json
+Authorization: Bearer <token>
+
+###
+POST http://localhost:8000/key/users
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "username": "kenny",
+  "password": "kenny",
+  "project": "projects:2"
+}
+
+###
+PATCH http://localhost:8000/key/users/<id>
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "username": "perro"
+}

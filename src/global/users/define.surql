@@ -1,10 +1,21 @@
 -- table
-DEFINE TABLE users SCHEMAFULL PERMISSIONS NONE;
+DEFINE TABLE users SCHEMAFULL PERMISSIONS
+  FOR select WHERE $auth.admin OR id = $auth.id,
+  FOR update WHERE $auth.admin OR id = $auth.id
+;
 
 -- fields
-DEFINE FIELD username ON users TYPE string;
-DEFINE FIELD password ON users TYPE string;
-DEFINE FIELD project  ON users TYPE option<record<projects>>;
+DEFINE FIELD username ON users TYPE string PERMISSIONS FOR update NONE;
+DEFINE FIELD password ON users TYPE string PERMISSIONS FOR select, update NONE;
+DEFINE FIELD project  ON users TYPE option<record<projects>> PERMISSIONS FOR update NONE;
+
+-- DEFINE FIELD devices ON users TYPE array<record<devices>>;
+
+DEFINE FIELD web_token ON users FLEXIBLE TYPE option<object> DEFAULT {} PERMISSIONS FOR select WHERE $auth.admin;
+DEFINE FIELD web_token.endpoint    ON users TYPE option<string>;
+DEFINE FIELD web_token.keys        ON users TYPE option<object>;
+DEFINE FIELD web_token.keys.auth   ON users TYPE option<string>;
+DEFINE FIELD web_token.keys.p256dh ON users TYPE option<string>;
 
 -- indexes
 DEFINE INDEX users_username ON TABLE users FIELDS username UNIQUE;
@@ -15,5 +26,5 @@ DEFINE EVENT users_log ON TABLE users WHEN $event IN ['CREATE', 'UPDATE', 'DELET
     CREATE logs SET index = $before.id, event = $event, time = time::now();
   } ELSE {
     CREATE logs SET index = $value.id,  event = $event, time = time::now();
-  }
+  };
 };

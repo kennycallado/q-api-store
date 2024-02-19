@@ -1,17 +1,13 @@
 -- table
 DEFINE TABLE users SCHEMAFULL PERMISSIONS
-  FOR select WHERE $auth.admin OR id = $auth.id,
-  FOR update WHERE $auth.admin OR id = $auth.id
-;
+  FOR select, update WHERE id = $auth;
 
 -- fields
 DEFINE FIELD username ON TABLE users TYPE string PERMISSIONS FOR update NONE;
-DEFINE FIELD password ON TABLE users TYPE string PERMISSIONS FOR select, update NONE;
 DEFINE FIELD project  ON TABLE users TYPE option<record<projects>> PERMISSIONS FOR update NONE;
 
 -- DEFINE FIELD devices ON users TYPE array<record<devices>>;
-
-DEFINE FIELD web_token ON TABLE users FLEXIBLE TYPE option<object> DEFAULT {} PERMISSIONS FOR select WHERE $auth.admin;
+DEFINE FIELD web_token    ON TABLE users FLEXIBLE TYPE option<object> DEFAULT {} PERMISSIONS FOR select NONE;
 DEFINE FIELD web_token.endpoint    ON TABLE users TYPE option<string>;
 DEFINE FIELD web_token.keys        ON TABLE users TYPE option<object>;
 DEFINE FIELD web_token.keys.auth   ON TABLE users TYPE option<string>;

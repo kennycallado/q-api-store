@@ -11,8 +11,7 @@ Content-Type: application/json
   "ns": "global",
   "db": "main",
   "sc": "user",
-  "username": "kenny",
-  "password": "kenny"
+  "username": "kenny"
 }
 
 ## pass ⬇️

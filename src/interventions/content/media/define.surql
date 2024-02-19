@@ -1,6 +1,7 @@
 -- table
 DEFINE TABLE media SCHEMAFULL PERMISSIONS
-  FOR select WHERE $auth.id;
+  FOR select WHERE $auth
+  ;
 
 -- fields
 DEFINE FIELD alt  ON TABLE media TYPE option<string>;
@@ -10,7 +11,7 @@ DEFINE FIELD type ON TABLE media TYPE string ASSERT $value INSIDE ['image', 'vid
 -- indexes
 
 -- events
-DEFINE EVENT media_log ON TABLE media WHEN $event = "CREATE" OR $event = "UPDATE" OR $event = "DELETE" THEN {
+DEFINE EVENT media_log ON TABLE media WHEN $event IN ['CREATE', 'UPDATE', 'DELETE'] THEN {
   IF $event = 'DELETE' {
     CREATE logs SET index = $before.id, event = $event, time = time::now();
   } ELSE {

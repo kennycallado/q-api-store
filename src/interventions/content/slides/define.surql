@@ -1,6 +1,7 @@
 -- table
 DEFINE TABLE slides SCHEMAFULL PERMISSIONS
-  FOR select WHERE $auth.id;
+  FOR select WHERE $auth
+  ;
 
 -- fields
 DEFINE FIELD title    ON TABLE slides TYPE string;
@@ -12,7 +13,7 @@ DEFINE FIELD question ON TABLE slides TYPE option<record<questions>> ASSERT $val
 -- indexes
 
 -- events
-DEFINE EVENT slides_log ON TABLE slides WHEN $event = "CREATE" OR $event = "UPDATE" OR $event = "DELETE" THEN {
+DEFINE EVENT slides_log ON TABLE slides WHEN $event = ['CREATE', 'UPDATE', 'DELETE'] THEN {
   IF $event = 'DELETE' {
     CREATE logs SET index = $before.id, event = $event, time = time::now();
   } ELSE {

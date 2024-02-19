@@ -1,7 +1,6 @@
 -- table
 DEFINE TABLE answers SCHEMAFULL PERMISSIONS
-  FOR select WHERE $auth.admin OR user = $auth.id,
-  FOR create, update WHERE user = $auth.id
+  FOR select, create, update WHERE user = $auth
   ;
 
 -- fields
@@ -12,7 +11,7 @@ DEFINE FIELD question ON TABLE answers TYPE record<questions> PERMISSIONS FOR up
 -- indexes
 
 -- events
-DEFINE EVENT answers_log ON TABLE answers WHEN $event = "CREATE" OR $event = "UPDATE" OR $event = "DELETE" THEN {
+DEFINE EVENT answers_log ON TABLE answers WHEN $event IN ['CREATE', 'UPDATE', 'DELETE'] THEN {
   IF $event = 'DELETE' {
     CREATE logs SET index = $before.id, event = $event, time = time::now();
   } ELSE {

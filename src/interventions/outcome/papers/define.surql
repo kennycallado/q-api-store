@@ -1,7 +1,6 @@
 -- table
 DEFINE TABLE papers SCHEMAFULL PERMISSIONS
-  FOR select WHERE user = $auth.id OR $auth.admin,
-  FOR create, update WHERE user = $auth.id
+  FOR select, create, update WHERE user = $auth
   ;
 
 -- fields
@@ -17,29 +16,25 @@ DEFINE FIELD answers.*  ON TABLE papers TYPE record<answers> ASSERT $value IN (S
 -- indexes
 
 -- events
-DEFINE EVENT prevent_update ON TABLE papers WHEN $event IS "UPDATE" THEN {
+DEFINE EVENT prevent_update ON TABLE papers WHEN $event IS 'UPDATE' THEN {
   IF $auth.id {
     IF $before.lock IS false AND $value.lock IS true { }
     ELSE IF $value.lock IS true { THROW "Should use: fn::on_push($paper_id: record, $answers: option<array<record<answers>>>)"; };
   };
 
   UPDATE $value SET lock = true; -- auto lock
-  
-  -- function() { console.log('update') };
 };
 
-DEFINE EVENT prevent_create ON TABLE papers WHEN $event IS "CREATE" THEN {
+DEFINE EVENT prevent_create ON TABLE papers WHEN $event IS 'CREATE' THEN {
   IF $auth.id {
     IF $value.lock IS false { }
     ELSE IF $value.lock IS true { THROW "Should use: fn::on_push($paper_id: record, $answers: option<array<record<answers>>>)"; };
   };
 
   UPDATE $value SET lock = true; -- auto lock
-
-  -- function() { console.log('create') };
 };
 
-DEFINE EVENT papers_log ON TABLE papers WHEN $event IS "CREATE" OR $event IS "UPDATE" OR $event IS "DELETE" THEN {
+DEFINE EVENT papers_log ON TABLE papers WHEN $event IN ['CREATE', 'UPDATE', 'DELETE'] THEN {
   IF $event = 'DELETE' {
     CREATE logs SET index = $before.id, event = $event, time = time::now();
   } ELSE {

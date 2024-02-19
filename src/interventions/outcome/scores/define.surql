@@ -1,7 +1,7 @@
 -- table
 DEFINE TABLE scores SCHEMAFULL PERMISSIONS
-  FOR select WHERE $auth.admin OR user = $auth.id,
-  FOR create WHERE user = $auth.id;
+  FOR select, create WHERE user = $auth
+  ;
 
 -- fields
 DEFINE FIELD user     ON TABLE scores TYPE record<users>;
@@ -11,7 +11,7 @@ DEFINE FIELD created  ON TABLE scores TYPE datetime DEFAULT time::now();
 -- indexes
 
 -- events
-DEFINE EVENT scores_log ON TABLE scores WHEN $event IS "CREATE" OR $event IS "UPDATE" OR $event IS "DELETE" THEN {
+DEFINE EVENT scores_log ON TABLE scores WHEN $event IN ['CREATE', 'UPDATE', 'DELETE'] THEN {
   IF $event = 'DELETE' {
     CREATE logs SET index = $before.id, event = $event, time = time::now();
   } ELSE {

@@ -1,11 +1,12 @@
 -- table
 DEFINE TABLE resources SCHEMAFULL PERMISSIONS
-  FOR select WHERE $auth.id;
+  FOR select WHERE $auth
+  ;
 
 -- fields
-DEFINE FIELD ref          ON TABLE resources TYPE string ASSERT $value IS NOT EMPTY VALUE string::slug($value);
 DEFINE FIELD description  ON TABLE resources TYPE string;
 DEFINE FIELD title        ON TABLE resources TYPE string ASSERT $value IS NOT EMPTY;
+DEFINE FIELD ref          ON TABLE resources TYPE string ASSERT $value IS NOT EMPTY VALUE string::slug($value);
 DEFINE FIELD type         ON TABLE resources TYPE string ASSERT $value INSIDE ['slides','module','form','external'];
 
 -- -- form
@@ -21,7 +22,7 @@ DEFINE FIELD slides ON TABLE resources TYPE option<array<record<slides>>> ASSERT
 DEFINE INDEX resources_ref_unique ON TABLE resources FIELDS ref UNIQUE;
 
 -- events
-DEFINE EVENT resources_log ON TABLE resources WHEN $event = "CREATE" OR $event = "UPDATE" OR $event = "DELETE" THEN {
+DEFINE EVENT resources_log ON TABLE resources WHEN $event IN ['CREATE', 'UPDATE', 'DELETE'] THEN {
   IF $event = 'DELETE' {
     CREATE logs SET index = $before.id, event = $event, time = time::now();
   } ELSE {

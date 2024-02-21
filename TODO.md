@@ -1,11 +1,17 @@
 # TODO:
 
+- [ ] scopes: ?? session duration revision
+- [ ] permissions: need a revision, research $auth.id, $session.sd, $token
+
+- [X] global: user ident just unique username
+- [ ] global: devices table to relate with users
+
 - [ ] toggle_active ??
 
-- [ ] create a client db for migrations
+- [?] create a client db for migrations
   - [ ] main: change main for server
   - [ ] client: create client migrations (?no extras)
-  - [ ] admin: create admint migrations  (?some estras)
+  - [ ] admin: create admint migrations  (?some extras)
 
 - [X] seed: fix evetns injection
 - [X] seed: first check if the example exists

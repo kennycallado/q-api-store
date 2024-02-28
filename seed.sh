@@ -6,6 +6,9 @@ pwd=$(pwd)
 db_url="http://localhost:8000"
 db_user="-u root:root"
 
+project_id="projects:1"
+user_id="users:1"
+
 main() {
   example="$1"
   ns="interventions"
@@ -23,29 +26,28 @@ main() {
   inject_params "$ns" "$db" "$info_db"
   inject_scopes "$ns" "$db" "$info_db"
   inject_tables "$ns" "$db" "$info_db"
+  inject_project_token
 
   # inject data
   cd "examples/$example"
 
-  for folder in `ls -d1 */`; do
-    ns=${folder%/}
-    db="$example"
-
-    for file in `ls $folder`; do
-      if [ $ns == "global" ]; then
-        db="main"
-      else
-        db="$example"
-      fi
-
-      inject $ns $db "$ns/$file"
-    done
-
-    ns=""
-    db=""
+  for file in *.surql; do
+    inject $ns $db "$file"
   done
 
   cd "$pwd"
+}
+
+inject_project_token() {
+  project=$(sql "global" "main" "LET \$q_project = (UPDATE $project_id SET name = '$example')[0]; RETURN encoding::base64::encode(\$q_project.token);")
+  user=$(sql "global" "main" "UPDATE $user_id SET project = $project_id, username = 'kenny';")
+
+  project_token=$(echo $project | jq -r '.[1].result')
+
+  printf "\033[0;32m Injecting project token: \033[0m \n"
+  printf "\t$project_id: "
+  sql "$ns" "$db" "DEFINE TOKEN user_scope ON SCOPE user TYPE HS256 VALUE '$project_token';" | jq '.[] | .status + " " + .time'
+  printf " $project_token\n"
 }
 
 inject_params() {

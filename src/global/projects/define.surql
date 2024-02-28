@@ -4,6 +4,9 @@ DEFINE TABLE projects SCHEMAFULL PERMISSIONS NONE;
 -- fields
 DEFINE FIELD name   ON TABLE projects TYPE string;
 DEFINE FIELD state  ON TABLE projects TYPE string ASSERT $value IN ['development', 'production'] DEFAULT 'development';
+DEFINE FIELD token  ON TABLE projects TYPE option<bytes> ASSERT $input IS NONE VALUE <bytes> rand::string(33);
+-- select value encoding::base64::encode(token) from only projects where name is 'demo' limit 1
+
 -- DEFINE FIELD brand  ON TABLE projects TYPE option<string> ASSERT $value IS EMPTY OR string::is::url($value);
 
 -- DEFINE FIELD database        ON TABLE projects TYPE option<object>;

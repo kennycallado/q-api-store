@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 set -e
-version="0.1.0"
+version="0.1.5"
 publish=true
 
 # db
@@ -95,7 +95,7 @@ create_images() {
     local tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
 
     # build the image
-    podman build --pull --no-cache --platform ${platform} -t kennycallado/surreal:${version}-${tag} -f Containerfile .
+    podman build --pull --no-cache --platform ${platform} -t kennycallado/surreal:v${version}-${tag} -f Containerfile .
 
     if [ $publish == true ]; then
       podman push kennycallado/surreal:${version}-${tag}

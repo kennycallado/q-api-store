@@ -3,8 +3,10 @@ DEFINE TABLE users SCHEMAFULL PERMISSIONS
   FOR select, update WHERE id = $auth;
 
 -- fields
-DEFINE FIELD username ON TABLE users TYPE string PERMISSIONS FOR update NONE;
+DEFINE FIELD username ON TABLE users TYPE string                   PERMISSIONS FOR update NONE;
 DEFINE FIELD project  ON TABLE users TYPE option<record<projects>> PERMISSIONS FOR update NONE;
+DEFINE FIELD role     ON TABLE users TYPE option<string>
+  ASSERT $value IN ['admin', 'user', 'guest'] DEFAULT 'user'       PERMISSIONS FOR update NONE;
 
 -- DEFINE FIELD devices ON users TYPE array<record<devices>>;
 DEFINE FIELD web_token    ON TABLE users FLEXIBLE TYPE option<object> DEFAULT {} PERMISSIONS FOR select NONE;

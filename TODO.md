@@ -1,5 +1,7 @@
 # TODO:
 
+- [X] both: users role field
+
 - [ ] scopes: ?? session duration revision
 - [ ] permissions: need a revision, research $auth.id, $session.sd, $token
 

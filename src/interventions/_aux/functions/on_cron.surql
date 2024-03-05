@@ -1,13 +1,10 @@
 DEFINE FUNCTION fn::on_cron($script: string) {
-  LET $script = (SELECT VALUE code FROM scripts WHERE name = $script)[0];
-  LET $users  = (SELECT VALUE id FROM users);
+  LET $script = (SELECT VALUE code FROM ONLY scripts WHERE name = $script LIMIT 1);
+  LET $users  = (SELECT VALUE id FROM users WHERE active IS true AND role IS NOT "admin");
 
   -- maybe if there is no paper for the user just create the actions...
   FOR $user in $users {
-    -- prevent include admins
-    IF $user.admin { CONTINUE };
-
-    LET $paper = (SELECT * FROM papers WHERE user = $user ORDER BY created DESC LIMIT 1)[0];
+    LET $paper = (SELECT * FROM ONLY papers WHERE user = $user ORDER BY created DESC LIMIT 1);
     LET $user = fn::execute_script($script, $user, $paper);
 
     -- save score

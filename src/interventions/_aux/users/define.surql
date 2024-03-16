@@ -5,8 +5,8 @@ DEFINE TABLE users SCHEMAFULL PERMISSIONS NONE;
 -- WARNING: pass is always crypted
 DEFINE FIELD pass   ON TABLE users TYPE string VALUE crypto::argon2::generate($value);
 DEFINE FIELD active ON TABLE users TYPE option<bool> DEFAULT false;
-DEFINE FIELD role   ON TABLE users TYPE option<string>
-  ASSERT $value IN ['admin', 'user', 'guest'] DEFAULT 'user';
+-- DEFINE FIELD role   ON TABLE users TYPE option<string>
+--   ASSERT $value IN ['admin', 'user', 'guest'] DEFAULT 'user';
 
 -- indexes
 

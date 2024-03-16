@@ -26,7 +26,9 @@ main() {
   inject_params "$ns" "$db" "$info_db"
   inject_scopes "$ns" "$db" "$info_db"
   inject_tables "$ns" "$db" "$info_db"
-  inject_project_token
+
+  create_roles
+  create_user_project
 
   # inject data
   cd "examples/$example"
@@ -38,13 +40,20 @@ main() {
   cd "$pwd"
 }
 
-inject_project_token() {
-  project=$(sql "global" "main" "LET \$q_project = (UPDATE $project_id SET name = '$example')[0]; RETURN encoding::base64::encode(\$q_project.token);")
+create_roles() {
+  roles=$(sql "global" "main" "INSERT INTO roles [{name: 'admin'}, {name: 'coord'}, {name: 'thera'}, {name: 'parti'}]")
+
+  printf "\033[0;31m Creating roles: \033[0m \n"
+  printf "\t$roles: \n"
+}
+
+create_user_project() {
+  project=$(sql "global" "main" "LET \$q_project = (UPDATE $project_id SET name = '$example')[0]; RETURN \$q_project.token;")
   user=$(sql "global" "main" "UPDATE $user_id SET project = $project_id, username = 'kenny';")
 
   project_token=$(echo $project | jq -r '.[1].result')
 
-  printf "\033[0;32m Injecting project token: \033[0m \n"
+  printf "\033[0;31m Injecting project token: \033[0m \n"
   printf "\t$project_id: "
   sql "$ns" "$db" "DEFINE TOKEN user_scope ON SCOPE user TYPE HS256 VALUE '$project_token';" | jq '.[] | .status + " " + .time'
   printf " $project_token\n"

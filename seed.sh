@@ -41,7 +41,7 @@ main() {
 }
 
 create_roles() {
-  roles=$(sql "global" "main" "INSERT INTO roles [{name: 'admin'}, {name: 'coord'}, {name: 'thera'}, {name: 'parti'}]")
+  roles=$(sql "global" "main" "INSERT INTO roles [{id: roles:1, name: 'admin'}, {id: roles:2 , name: 'coord'}, {id: roles:3, name: 'thera'}, {id: roles:4, name: 'parti'}, {id: roles:5, name: 'guest'}]")
 
   printf "\033[0;31m Creating roles: \033[0m \n"
   printf "\t$roles: \n"
@@ -49,7 +49,7 @@ create_roles() {
 
 create_user_project() {
   project=$(sql "global" "main" "LET \$q_project = (UPDATE $project_id SET name = '$example')[0]; RETURN \$q_project.token;")
-  user=$(sql "global" "main" "UPDATE $user_id SET project = $project_id, username = 'kenny';")
+  user=$(sql "global" "main" "UPDATE $user_id SET project = $project_id, username = 'kenny', role = roles:4;")
 
   project_token=$(echo $project | jq -r '.[1].result')
 

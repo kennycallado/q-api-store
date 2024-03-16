@@ -1,0 +1,19 @@
+-- table
+DEFINE TABLE roles SCHEMAFULL PERMISSIONS
+  FOR select WHERE $auth
+  ;
+
+-- fields
+DEFINE FIELD name ON TABLE roles TYPE string;
+
+-- indexes
+DEFINE INDEX roles_name_index ON TABLE roles FIELDS name UNIQUE;
+
+-- events
+DEFINE EVENT roles_log ON TABLE roles WHEN $event IN ['CREATE', 'UPDATE', 'DELETE'] THEN {
+  IF $event IS 'DELETE' {
+    CREATE logs SET index = $before.id, event = $event, time = time::now();
+  } ELSE {
+    CREATE logs SET index = $value.id,  event = $event, time = time::now();
+  };
+};

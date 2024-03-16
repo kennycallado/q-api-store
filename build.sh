@@ -1,7 +1,8 @@
 #! /usr/bin/env bash
 
 set -e
-version="v0.1.5"
+name="q-api-store"
+version="v0.1.6"
 publish=true
 
 # db
@@ -24,6 +25,15 @@ main() {
     inject $ns "main"
   done 
   cd ..
+
+  # inject demo example
+  if [ "$1" == "true" ]; then
+    echo -e "\tcreating demo image"
+    name="${name}-demo"
+
+    echo -e "\tinjecting demo"
+    ./seed.sh "demo"
+  fi
 
   echo -e "\tfinish container"
   finish_container
@@ -95,36 +105,36 @@ create_images() {
     local tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
 
     # build the image
-    podman build --pull --no-cache --platform ${platform} -t kennycallado/surreal:${version}-${tag} -f Containerfile .
+    podman build --pull --no-cache --platform ${platform} -t kennycallado/${name}:${version}-${tag} -f Containerfile .
 
     if [ $publish == true ]; then
-      podman push kennycallado/surreal:${version}-${tag}
+      podman push kennycallado/${name}:${version}-${tag}
     fi
   done
 
   if [ $publish == true ]; then
     echo "Creating the manifest version: $version"
-    podman manifest create kennycallado/surreal:$version
+    podman manifest create kennycallado/${name}:$version
     for platform in ${platforms[@]}; do
       tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
-      podman manifest add --arch ${tag} kennycallado/surreal:$version kennycallado/surreal:${version}-${tag}
+      podman manifest add --arch ${tag} kennycallado/${name}:${version} kennycallado/${name}:${version}-${tag}
 
-      podman manifest add --arch ${platform#*/} kennycallado/surreal:${version} kennycallado/surreal:${version}-${tag}
+      podman manifest add --arch ${platform#*/} kennycallado/${name}:${version} kennycallado/${name}:${version}-${tag}
     done
 
     echo "Createing the latest manifest"
-    podman manifest create kennycallado/surreal:latest
+    podman manifest create kennycallado/${name}:latest
     for platform in ${platforms[@]}; do
       local tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
-      podman manifest add --arch ${tag} kennycallado/surreal:latest kennycallado/surreal:${version}-${tag}
+      podman manifest add --arch ${tag} kennycallado/${name}:latest kennycallado/${name}:${version}-${tag}
 
-      podman manifest add --arch ${platform#*/} kennycallado/surreal:latest kennycallado/surreal:${version}-${tag}
+      podman manifest add --arch ${platform#*/} kennycallado/${name}:latest kennycallado/${name}:${version}-${tag}
     done
 
     echo "Pushing the manifests..."
     # and remove them
-    podman manifest push --rm kennycallado/surreal:$version docker://kennycallado/surreal:$version
-    podman manifest push --rm kennycallado/surreal:latest docker://kennycallado/surreal:latest
+    podman manifest push --rm kennycallado/${name}:$version docker://kennycallado/${name}:$version
+    podman manifest push --rm kennycallado/${name}:latest docker://kennycallado/${name}:latest
   fi
 }
 
@@ -133,7 +143,7 @@ clean_up() {
   for platform in ${platforms[@]}; do
     local tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
 
-    podman rmi kennycallado/surreal:${version}-${tag}
+    podman rmi kennycallado/${name}:${version}-${tag}
   done
 
   echo "Cleaning up the manifest..."

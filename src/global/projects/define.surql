@@ -4,7 +4,7 @@ DEFINE TABLE projects SCHEMAFULL PERMISSIONS NONE;
 -- fields
 DEFINE FIELD name   ON TABLE projects TYPE string;
 DEFINE FIELD state  ON TABLE projects TYPE string ASSERT $value IN ['development', 'testing', 'production'] DEFAULT 'development';
-DEFINE FIELD token  ON TABLE projects TYPE option<string> ASSERT $input IS NONE VALUE rand::string(33);
+DEFINE FIELD token  ON TABLE projects TYPE option<string> ASSERT $input IS NONE VALUE $before OR rand::string(33);
 
 -- may be is not needed to use bytes
 -- DEFINE FIELD token  ON TABLE projects TYPE option<bytes> ASSERT $input IS NONE VALUE <bytes> rand::string(33);

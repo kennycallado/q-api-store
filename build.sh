@@ -14,15 +14,21 @@ db_version="v1.3.1"
 platforms=("linux/arm64" "linux/amd64")
 
 main() {
-  echo -e "\tinit container"
+  echo -e "\tinit container\n"
   init_container
 
-  echo -e "\tinjecting data"
+  echo -e "\tinjecting data\n"
   cd src
   for folder in */; do
     local ns=${folder%/}
 
-    inject $ns "main"
+    for folder_in in $folder*/; do
+      local db=${folder_in%/}
+      local db=${db#*/}
+
+      inject $ns $db
+    done
+
   done 
   cd ..
 
@@ -38,6 +44,9 @@ main() {
   echo -e "\tfinish container"
   finish_container
 
+  echo -e "\tremoving previous images\n"
+  remove_previous_images
+
   echo -e "\tcreate images"
   create_images
 
@@ -48,7 +57,7 @@ main() {
 inject() {
   local ns=$1
   local db=$2
-  local file="${ns}/dump.surql"
+  local file="$ns/$db/dump.surql"
 
   if [ -f "$file" ]; then
     curl -sS -X 'POST' -H 'Accept: application/json' -H "NS: $ns" -H "DB: $db" --data-binary @"$file" "$db_url/import" | jq '.[] | .status + " " + .time'
@@ -95,6 +104,18 @@ finish_container() {
 
   # make sure the data is accessible
   podman run --rm -it --user 1000:1000 -v ./data:/data alpine:3.18 ash -c "chmod -R 777 /data/*"
+}
+
+remove_previous_images() {
+  echo "Removing previous images..."
+  for platform in ${platforms[@]}; do
+    local tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
+
+    podman rmi kennycallado/${name}:${version}-${tag} &> /dev/null || true
+  done
+
+  podman rmi kennycallado/${name}:$version &> /dev/null || true
+  podman rmi kennycallado/${name}:latest &> /dev/null || true
 }
 
 create_images() {

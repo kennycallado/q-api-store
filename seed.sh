@@ -6,13 +6,20 @@ pwd=$(pwd)
 db_url="http://localhost:8000"
 db_user="-u root:root"
 
+center_id="centers:1"
 project_id="projects:1"
 user_id="users:1"
 
 main() {
   example="$1"
-  ns="interventions"
+  ns="$example"
   db="$example"
+
+  # check that $1 is not empty
+  if [ -z "$example" ]; then
+    echo -e "\033[0;31mExample name is empty\033[0m"
+    exit 1
+  fi
 
   # check example exist
   if [ ! -d "examples/$example" ]; then
@@ -20,15 +27,15 @@ main() {
     exit 1
   fi
 
-  info_db=$(sql "$ns" "main" "INFO FOR DB;")
+  info_db=$(sql "global" "interventions" "INFO FOR DB;")
 
   inject_functions "$ns" "$db" "$info_db"
   inject_params "$ns" "$db" "$info_db"
   inject_scopes "$ns" "$db" "$info_db"
   inject_tables "$ns" "$db" "$info_db"
 
-  create_roles
-  create_user_project
+  # create_roles # not needed for now
+  create_center_project_user
 
   # inject data
   cd "examples/$example"
@@ -41,17 +48,17 @@ main() {
 }
 
 create_roles() {
-  roles=$(sql "global" "main" "INSERT INTO roles [{id: roles:1, name: 'admin'}, {id: roles:2 , name: 'coord'}, {id: roles:3, name: 'thera'}, {id: roles:4, name: 'parti'}, {id: roles:5, name: 'guest'}]")
+  roles=$(sql "global" "main" "INSERT INTO roles [{id: roles:0, name: 'robot'}, {id: roles:1, name: 'admin'}, {id: roles:2 , name: 'coord'}, {id: roles:3, name: 'thera'}, {id: roles:4, name: 'parti'}, {id: roles:5, name: 'guest'}]")
 
   printf "\033[0;31m Creating roles: \033[0m \n"
   printf "\t$roles: \n"
 }
 
-create_user_project() {
-  project=$(sql "global" "main" "LET \$q_project = (UPDATE $project_id SET name = '$example')[0]; RETURN \$q_project.token;")
-  user=$(sql "global" "main" "UPDATE $user_id SET project = $project_id, username = 'kenny', role = roles:4;")
+create_center_project_user() {
+  project=$(sql "global" "main" "UPDATE $center_id SET name = '$example';; LET \$q_project = (UPDATE $project_id SET center = $center_id, name = '$example')[0]; RETURN \$q_project.token;")
+  user=$(sql "global" "main" "UPDATE $user_id SET project = $project_id, username = 'kenny', password = 'kenny', role = 'admin';")
 
-  project_token=$(echo $project | jq -r '.[1].result')
+  project_token=$(echo $project | jq -r '.[2].result')
 
   printf "\033[0;31m Injecting project token: \033[0m \n"
   printf "\t$project_id: "
@@ -103,7 +110,7 @@ inject_tables() {
       fi
 
       # get info for table
-      info_table=$(sql "$ns" "main" "INFO FOR TB $key;")
+      info_table=$(sql "global" "interventions" "INFO FOR TB $key;")
 
       # define table
       define_table=$(echo "$info_db" | jq -r '.[].result.tables.'$key)

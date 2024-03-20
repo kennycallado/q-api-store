@@ -1,5 +1,6 @@
 # TODO:
 
+- [?] global: users maybe DEFAULT (SELECT VALUE name FROM roles WHERE default = true LIMIT 1)
 - [X] both: users role field
 
 - [ ] scopes: ?? session duration revision

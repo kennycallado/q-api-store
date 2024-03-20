@@ -7,36 +7,45 @@ db_url="http://localhost:8000"
 db_user="-u root:root"
 
 main() {
-  local namespaces=("global" "interventions" "shared") # shared should be after interventions
+  local namespaces=("global")
+  # local namespaces=("global" "shared")
 
   for ns in "${namespaces[@]}"; do
     cd "src/$ns"
 
     for folder in */; do
-      if [ "$ns" == "interventions" ]; then
+      local db=${folder%/}
 
         for folder_in in "$folder"*/; do
-          for file in "$folder_in"*.surql; do
+          if [[ "$folder_in" == *"interventions"* ]]; then
 
-            if [ "$folder" == "aux/" ] || [ "$folder" == "content/" ]; then
-              echo "sharring $file"
-              inject "shared" "main" "$file"
-            fi
+            for folder_in_in in "$folder_in"*/; do
+              for file in "$folder_in_in"*.surql; do
+                echo "$ns" "interventions" "$file"
+                inject "$ns" "interventions" "$file"
+              done
+            done
 
-            echo "$file"
-            inject "$ns" "main" "$file"
-          done
+          else
+
+            for file in "$folder_in"*.surql; do
+
+              if [ "$folder" == "aux/" ] || [ "$folder" == "content/" ]; then
+                echo "sharing $file"
+                inject "shared" "main" "$file"
+              fi
+
+              echo "$file"
+              inject "$ns" "main" "$file"
+            done
+
+          fi
+
         done
-      else
 
-        for file in "$folder"*.surql; do
-          echo "$file"
-          inject "$ns" "main" "$file"
-        done
-      fi
+        dump $ns $db $folder
     done
 
-    dump "$ns" "main"
     cd "$pwd"
   done
 }
@@ -61,8 +70,9 @@ inject() {
 dump() {
   local ns=$1
   local db=$2
+  local folder=$3
 
-  curl $db_user -sS -X 'GET' -H 'Accept: application/json' -H "NS: $ns" -H "DB: $db" "$db_url/export" > dump.surql
+  curl $db_user -sS -X 'GET' -H 'Accept: application/json' -H "NS: $ns" -H "DB: $db" "$db_url/export" > "$folder/dump.surql"
 }
 
 main "$@"

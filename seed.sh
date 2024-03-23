@@ -55,7 +55,7 @@ create_roles() {
 }
 
 create_center_project_user() {
-  project=$(sql "global" "main" "UPDATE $center_id SET name = '$example';; LET \$q_project = (UPDATE $project_id SET center = $center_id, name = '$example')[0]; RETURN \$q_project.token;")
+  project=$(sql "global" "main" "UPDATE $center_id SET name = '$example'; LET \$q_project = (UPDATE $project_id SET center = $center_id, name = '$example')[0]; RETURN \$q_project.token;")
   user=$(sql "global" "main" "UPDATE $user_id SET project = $project_id, username = 'kenny', password = 'kenny', role = 'admin';")
 
   project_token=$(echo $project | jq -r '.[2].result')

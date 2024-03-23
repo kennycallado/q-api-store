@@ -1,4 +1,4 @@
-INFO FOR DB;
+RETURN NONE;
 -- -- table
 -- DEFINE TABLE roles SCHEMAFULL PERMISSIONS
 --   FOR select, update, delete WHERE $auth

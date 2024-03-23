@@ -30,3 +30,17 @@ DEFINE EVENT users_log ON TABLE users WHEN $event IN ['CREATE', 'UPDATE', 'DELET
     CREATE logs SET index = $value.id,  event = $event, time = time::now();
   };
 };
+
+DEFINE EVENT users_join ON TABLE users WHEN $event IN ['CREATE', 'UPDATE'] THEN {
+  IF $value.project IS NOT NONE {
+    LET $id = $value.id;
+    LET $project = $value.project;
+
+    IF (SELECT id FROM join WHERE in = $id AND out = $project) {
+      UPDATE join SET last_time = time::now() WHERE in = $id AND out = $project;
+    } ELSE {
+      RELATE $id->join->$project CONTENT {  frist_time: time::now(), last_time: time::now() };
+    };
+
+  };
+};

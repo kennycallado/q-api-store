@@ -8,6 +8,7 @@ DEFINE FIELD name   ON TABLE projects TYPE string;
 DEFINE FIELD state  ON TABLE projects TYPE string ASSERT $value IN ['development', 'testing', 'production', 'finished'] DEFAULT 'development';
 DEFINE FIELD token  ON TABLE projects TYPE option<string> ASSERT $input IS NONE VALUE $before OR rand::string(33);
 DEFINE FIELD center ON TABLE projects TYPE record<centers>;
+DEFINE FIELD keys   ON TABLE projects TYPE option<array<string>>;
 
 DEFINE FIELD settings ON TABLE projects FLEXIBLE TYPE option<object> DEFAULT {};
 DEFINE FIELD settings.url ON TABLE projects TYPE option<string> ASSERT $value IS EMPTY OR string::is::url($value);

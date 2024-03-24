@@ -1,5 +1,9 @@
 -- table
-DEFINE TABLE messages PERMISSIONS NONE;
+DEFINE TABLE messages PERMISSIONS
+  FOR select WHERE $auth,
+  FOR create, update WHERE $token.role IN ['admin', 'coord', 'thera'],
+  FOR delete WHERE $token.role IN ['admin', 'coord']
+  ;
 
 -- fields
 DEFINE FIELD title ON TABLE messages TYPE string;

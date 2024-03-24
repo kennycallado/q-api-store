@@ -1,5 +1,9 @@
 -- table
-DEFINE TABLE scripts SCHEMAFULL PERMISSIONS FULL;
+DEFINE TABLE scripts SCHEMAFULL PERMISSIONS
+  FOR select WHERE $auth,
+  FOR create, update WHERE $token.role IN ['admin', 'coord', 'thera'],
+  FOR delete WHERE $token.role IN ['admin', 'coord']
+  ;
 
 -- fields
 DEFINE FIELD name ON TABLE scripts TYPE string;

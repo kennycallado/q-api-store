@@ -1,16 +1,20 @@
 -- table
 DEFINE TABLE events SCHEMAFULL PERMISSIONS
-  FOR select WHERE $auth
+  -- FOR select WHERE $auth
+  FOR select, create, update WHERE $token.role IN ['admin', 'coord', 'thera'],
+  FOR delete WHERE $token.role IN ['admin', 'coord']
   ;
 
 -- fields
 DEFINE FIELD schedule ON TABLE events TYPE string; -- cron like string "* * * * * *"
 DEFINE FIELD script   ON TABLE events TYPE string; -- script name
-DEFINE FIELD job_id   ON TABLE events TYPE option<uuid> DEFAULT NONE; -- job id
 DEFINE FIELD active   ON TABLE events TYPE bool DEFAULT false;   -- is the event active
-DEFINE FIELD status   ON TABLE events TYPE option<string> ASSERT $value IS NONE OR $value IN ['scheduled', 'running', 'failed', 'done'];
 DEFINE FIELD since    ON TABLE events TYPE option<datetime>;
 DEFINE FIELD until    ON TABLE events TYPE option<datetime>;
+
+-- job could be a table
+DEFINE FIELD job_id   ON TABLE events TYPE option<uuid> DEFAULT NONE; -- job id
+DEFINE FIELD status   ON TABLE events TYPE option<string> ASSERT $value IS NONE OR $value IN ['scheduled', 'running', 'failed', 'done'];
 
 -- indexes
 

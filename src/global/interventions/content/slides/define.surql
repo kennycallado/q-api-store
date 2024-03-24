@@ -1,6 +1,8 @@
 -- table
 DEFINE TABLE slides SCHEMAFULL PERMISSIONS
-  FOR select WHERE $auth
+  FOR select WHERE $auth,
+  FOR create, update WHERE $token.role IN ['admin', 'coord', 'thera'],
+  FOR delete WHERE $token.role IN ['admin', 'coord']
   ;
 
 -- fields

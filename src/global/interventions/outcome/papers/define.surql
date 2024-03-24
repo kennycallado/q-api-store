@@ -1,6 +1,12 @@
 -- table
 DEFINE TABLE papers SCHEMAFULL PERMISSIONS
-  FOR select, create, update WHERE user = $auth
+  -- old -> FOR select, create, update WHERE user = $auth
+
+  -- if production only allow admin, coord
+  FOR select  WHERE user = $auth OR $token.role IN ['admin', 'coord', 'thera'],
+  FOR create,
+      update  WHERE user = $auth OR $token.role IN ['admin', 'coord', 'thera'],
+  FOR delete  WHERE $token.role IN ['admin', 'coord']
   ;
 
 -- fields

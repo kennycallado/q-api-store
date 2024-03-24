@@ -1,12 +1,17 @@
 -- table
 DEFINE TABLE scores SCHEMAFULL PERMISSIONS
-  FOR select, create WHERE user = $auth
+  -- old -> FOR select, create WHERE user = $auth
+
+  FOR create WHERE user = $auth,
+  FOR select WHERE user = $auth OR $token.role IN ['admin', 'coord', 'thera'],
+  FOR update WHERE $token.role IN ['admin', 'coord', 'thera'],
+  FOR delete WHERE $token.role IN ['admin', 'coord']
   ;
 
 -- fields
-DEFINE FIELD user     ON TABLE scores TYPE record<users>;
-DEFINE FIELD score    ON TABLE scores FLEXIBLE TYPE object DEFAULT {};
-DEFINE FIELD created  ON TABLE scores TYPE datetime DEFAULT time::now();
+DEFINE FIELD user    ON TABLE scores TYPE record<users> PERMISSIONS FOR update NONE;
+DEFINE FIELD score   ON TABLE scores FLEXIBLE TYPE object DEFAULT {};
+DEFINE FIELD created ON TABLE scores TYPE datetime DEFAULT time::now() PERMISSIONS FOR update NONE;
 
 -- indexes
 

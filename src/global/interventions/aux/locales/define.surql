@@ -1,6 +1,7 @@
 -- table
 DEFINE TABLE locales SCHEMAFULL PERMISSIONS
-  FOR select WHERE $auth
+  FOR select WHERE $auth,
+  FOR create, update, delete WHERE $token.role IN ['admin', 'coord']
   ;
 
 -- fields

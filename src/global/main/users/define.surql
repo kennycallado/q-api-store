@@ -7,7 +7,7 @@ DEFINE TABLE users SCHEMAFULL PERMISSIONS
 -- fields
 DEFINE FIELD username ON TABLE users TYPE string PERMISSIONS FOR update NONE;
 DEFINE FIELD password ON TABLE users TYPE string VALUE $before OR crypto::argon2::generate($value) PERMISSIONS FOR select, update NONE;
-DEFINE FIELD project  ON TABLE users TYPE option<record<projects>> PERMISSIONS FOR update WHERE $token.role IN ['robot', 'admin', 'coord'];
+DEFINE FIELD project  ON TABLE users TYPE option<record<projects>> PERMISSIONS FOR update WHERE $token.role IN ['robot', 'admin', 'coord', 'thera'];
 DEFINE FIELD role     ON TABLE users TYPE option<string>
   ASSERT $value IN ['robot', 'admin', 'coord', 'thera', 'parti', 'guest'] DEFAULT 'parti' PERMISSIONS FOR update NONE;
   -- DEFINE FIELD role ON TABLE users TYPE record<roles> PERMISSIONS FOR update NONE;
@@ -36,6 +36,7 @@ DEFINE EVENT users_join ON TABLE users WHEN $event IN ['CREATE', 'UPDATE'] THEN 
     LET $id = $value.id;
     LET $project = $value.project;
 
+    -- check if the user is already in the project
     IF (SELECT id FROM join WHERE in = $id AND out = $project) {
       UPDATE join SET last_time = time::now() WHERE in = $id AND out = $project;
     } ELSE {

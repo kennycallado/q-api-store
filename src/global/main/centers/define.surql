@@ -4,7 +4,7 @@ DEFINE TABLE centers SCHEMAFULL PERMISSIONS
   ;
 
 -- fields
-DEFINE FIELD name ON TABLE centers TYPE string;
+DEFINE FIELD name ON TABLE centers TYPE string PERMISSIONS FOR update NONE;
 
 -- indexes
 DEFINE INDEX name_index ON TABLE centers FIELDS name UNIQUE;

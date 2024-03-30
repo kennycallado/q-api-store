@@ -2,14 +2,13 @@
 DEFINE TABLE users SCHEMAFULL PERMISSIONS
   FOR select, create, update WHERE $token.role IN ['admin', 'coord', 'thera']
   FOR delete WHERE $token.role IN ['admin', 'coord']
-;
+  ;
 
 -- fields
--- WARNING: pass is always crypted
-DEFINE FIELD pass   ON TABLE users TYPE string VALUE crypto::argon2::generate($value) PERMISSIONS FOR select NONE;
-DEFINE FIELD active ON TABLE users TYPE option<bool> DEFAULT false;
--- DEFINE FIELD role   ON TABLE users TYPE option<string>
---   ASSERT $value IN ['admin', 'user', 'guest'] DEFAULT 'user';
+DEFINE FIELD pass      ON TABLE users TYPE string VALUE $before OR crypto::argon2::generate($value) PERMISSIONS FOR select NONE;
+DEFINE FIELD role      ON TABLE users TYPE option<string> ASSERT $value IN ['admin', 'guest', 'parti'] DEFAULT 'parti';
+DEFINE FIELD active    ON TABLE users TYPE option<bool> DEFAULT false;
+DEFINE FIELD completed ON TABLE users TYPE option<bool> DEFAULT false;
 
 -- indexes
 

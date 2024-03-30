@@ -1,5 +1,6 @@
 # TODO:
 
+- [ ] events: super should use jobs table intead of update events
 - [?] global: users maybe DEFAULT (SELECT VALUE name FROM roles WHERE default = true LIMIT 1)
 - [X] both: users role field
 

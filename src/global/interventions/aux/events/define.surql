@@ -12,7 +12,7 @@ DEFINE FIELD active   ON TABLE events TYPE bool DEFAULT false;   -- is the event
 DEFINE FIELD since    ON TABLE events TYPE option<datetime>;
 DEFINE FIELD until    ON TABLE events TYPE option<datetime>;
 
--- job could be a table
+-- should use jobs table
 DEFINE FIELD job_id   ON TABLE events TYPE option<uuid> DEFAULT NONE; -- job id
 DEFINE FIELD status   ON TABLE events TYPE option<string> ASSERT $value IS NONE OR $value IN ['scheduled', 'running', 'failed', 'done'];
 

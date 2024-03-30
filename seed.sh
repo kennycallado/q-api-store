@@ -29,10 +29,10 @@ main() {
 
   info_db=$(sql "global" "interventions" "INFO FOR DB;")
 
-  inject_functions "$ns" "$db" "$info_db"
-  inject_params "$ns" "$db" "$info_db"
-  inject_scopes "$ns" "$db" "$info_db"
-  inject_tables "$ns" "$db" "$info_db"
+  # inject_functions "$ns" "$db" "$info_db"
+  # inject_params "$ns" "$db" "$info_db"
+  # inject_scopes "$ns" "$db" "$info_db"
+  # inject_tables "$ns" "$db" "$info_db"
 
   # create_roles # not needed for now
   create_center_project_user
@@ -58,12 +58,12 @@ create_center_project_user() {
   project=$(sql "global" "main" "UPDATE $center_id SET name = '$example'; LET \$q_project = (UPDATE $project_id SET center = $center_id, name = '$example')[0]; RETURN \$q_project.token;")
   user=$(sql "global" "main" "UPDATE $user_id SET project = $project_id, username = 'kenny', password = 'kenny', role = 'admin';")
 
-  project_token=$(echo $project | jq -r '.[2].result')
+  # project_token=$(echo $project | jq -r '.[2].result')
 
-  printf "\033[0;31m Injecting project token: \033[0m \n"
-  printf "\t$project_id: "
-  sql "$ns" "$db" "DEFINE TOKEN user_scope ON SCOPE user TYPE HS256 VALUE '$project_token';" | jq '.[] | .status + " " + .time'
-  printf " $project_token\n"
+  # printf "\033[0;31m Injecting project token: \033[0m \n"
+  # printf "\t$project_id: "
+  # sql "$ns" "$db" "DEFINE TOKEN user_scope ON SCOPE user TYPE HS256 VALUE '$project_token';" | jq '.[] | .status + " " + .time'
+  # printf " $project_token\n"
 }
 
 inject_params() {

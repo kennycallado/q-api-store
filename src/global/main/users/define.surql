@@ -38,10 +38,16 @@ DEFINE EVENT users_join ON TABLE users WHEN $event IN ['CREATE', 'UPDATE'] THEN 
 
     -- check if the user is already in the project
     IF (SELECT id FROM join WHERE in = $id AND out = $project) {
-      UPDATE join SET last_time = time::now() WHERE in = $id AND out = $project;
+      UPDATE join SET updated = time::now() WHERE in = $id AND out = $project;
     } ELSE {
-      RELATE $id->join->$project CONTENT {  frist_time: time::now(), last_time: time::now() };
+      RELATE $id->join->$project CONTENT { created: time::now(), updated: time::now() };
     };
-
   };
+  -- in case to control exit
+  -- ELSE IF $before.project IS NOT NONE {
+  --   LET $id = $value.id;
+  --   LET $project = $before.project;
+  --   -- RELATE $id->join->$project CONTENT { exit: true, updated: time::now() };
+  --   UPDATE join SET updated = time::now() WHERE in = $id AND out = $project;
+  -- };
 };

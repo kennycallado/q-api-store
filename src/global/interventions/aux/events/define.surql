@@ -7,7 +7,7 @@ DEFINE TABLE events SCHEMAFULL PERMISSIONS
 
 -- fields
 DEFINE FIELD schedule ON TABLE events TYPE string; -- cron like string "* * * * * *"
-DEFINE FIELD script   ON TABLE events TYPE string; -- script name
+DEFINE FIELD script   ON TABLE events TYPE string ASSERT $value IN (SELECT VALUE name FROM scripts); -- script name
 DEFINE FIELD active   ON TABLE events TYPE bool DEFAULT false;   -- is the event active
 DEFINE FIELD since    ON TABLE events TYPE option<datetime>;
 DEFINE FIELD until    ON TABLE events TYPE option<datetime>;

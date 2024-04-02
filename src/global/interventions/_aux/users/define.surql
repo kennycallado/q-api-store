@@ -6,9 +6,9 @@ DEFINE TABLE users SCHEMAFULL PERMISSIONS
 
 -- fields
 DEFINE FIELD pass      ON TABLE users TYPE string VALUE $before OR crypto::argon2::generate($value) PERMISSIONS FOR select NONE;
-DEFINE FIELD role      ON TABLE users TYPE option<string> ASSERT $value IN ['admin', 'guest', 'parti'] DEFAULT 'parti';
-DEFINE FIELD active    ON TABLE users TYPE option<bool> DEFAULT false;
-DEFINE FIELD completed ON TABLE users TYPE option<bool> DEFAULT false;
+DEFINE FIELD role      ON TABLE users TYPE option<string> ASSERT $value IN ['admin', 'coord', 'thera', 'parti', 'guest'] DEFAULT 'parti';
+DEFINE FIELD active    ON TABLE users TYPE option<bool> DEFAULT false ASSERT $value IS false OR role IN ['parti', 'guest'];
+DEFINE FIELD completed ON TABLE users TYPE option<bool> DEFAULT false ASSERT $value IS false OR role IN ['parti', 'guest'];
 
 -- indexes
 

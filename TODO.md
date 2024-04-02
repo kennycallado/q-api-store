@@ -1,6 +1,8 @@
 # TODO:
 
-- [ ] events: super should use jobs table intead of update events
+- [ ] events: super should use cronjobs table intead of update events
+- [X] jobs: should be called cronjobs
+
 - [?] global: users maybe DEFAULT (SELECT VALUE name FROM roles WHERE default = true LIMIT 1)
 - [X] both: users role field
 

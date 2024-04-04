@@ -9,7 +9,7 @@ DEFINE FIELD score     ON TABLE join FLEXIBLE TYPE option<object>
   ASSERT $value IS NONE
     OR $before IS NONE
     AND completed IS true
-    AND object::keys($value) CONTAINSALL (SELECT VALUE keys FROM ONLY $this.out LIMIT 1);
+    AND object::keys($value) CONTAINSALL (SELECT VALUE keys FROM ONLY $this.out LIMIT 1) OR [];
 
 -- select value score from only (select created, score from only scores order by created desc limit 1) limit 1
 

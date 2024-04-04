@@ -2,7 +2,7 @@
 
 set -e
 name="q-api-store"
-version="v0.1.6"
+version="v0.2.0"
 publish=true
 
 # db
@@ -15,7 +15,7 @@ platforms=("linux/arm64" "linux/amd64")
 
 main() {
   echo -e "\tinit container\n"
-  init_container
+  init_container $1
 
   echo -e "\tinjecting data\n"
   cd src
@@ -72,21 +72,27 @@ init_container() {
   mkdir ./data
   chmod -R 777 ./data
 
-  # init surrealdb with a volume
+  podman pod create --name foo -v ./data:/data -p 8000:8000
+
   podman run -d --rm \
-    --user 1000:1000 \
     --name surrealdb \
-    -v ./data:/data \
-    -p 8000:8000 \
+    --pod foo \
+    --user 1000:1000 \
     "surrealdb/surrealdb:$db_version" \
     start --user root --pass root "file://$db_file"
-
-    # surrealdb/surrealdb:nightly \
 
   while ! curl -s "$db_url/status" &> /dev/null; do
       echo "Waiting for surrealdb to start..."
       sleep 1
   done
+
+  if [ "$1" == "true" ]; then
+    podman run -d --rm \
+      --name super \
+      --pod foo \
+      --user 1000:1000 \
+      "kennycallado/q-api-super:latest"
+  fi
 }
 
 finish_container() {
@@ -99,8 +105,8 @@ finish_container() {
     -d "REMOVE USER root ON ROOT" \
     "$db_url/sql" | jq '.[] | .status + " " + .time'
 
-  # finish the instance
-  podman kill surrealdb
+  podman pod stop foo
+  podman pod rm foo
 
   # make sure the data is accessible
   podman run --rm -it --user 1000:1000 -v ./data:/data alpine:3.18 ash -c "chmod -R 777 /data/*"

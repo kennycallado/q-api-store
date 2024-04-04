@@ -93,6 +93,8 @@ init_container() {
       --user 1000:1000 \
       "kennycallado/q-api-super:latest"
   fi
+
+  sleep 5
 }
 
 finish_container() {

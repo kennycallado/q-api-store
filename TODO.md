@@ -1,5 +1,8 @@
 # TODO:
 
+- [~] join: ?? assert waits projects has keys... take a look at CONTAINSALL
+- [~] build: seems execute seed before super is ready
+
 - [X] join: assert project.keys are in score
 - [X] version: consider getting 0.2.0
 - [X] build: ?? also needs to run super

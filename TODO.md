@@ -1,5 +1,7 @@
 # TODO:
 
+- [X] version: consider getting 0.2.0
+- [X] build: ?? also needs to run super
 - [ ] events: super should use cronjobs table intead of update events
 - [X] jobs: should be called cronjobs
 

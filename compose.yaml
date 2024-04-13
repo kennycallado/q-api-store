@@ -12,7 +12,7 @@ services:
       - -A
       - --auth
       - --no-banner
-      - --log=trace
+      # - --log=trace
       # - --log=info
       - --user=root
       - --pass=root

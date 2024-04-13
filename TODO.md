@@ -1,6 +1,12 @@
 # TODO:
 
+- [ ] interv_users: execute fn::on_init and fn::on_done by events
+  - I think it is more performance because they are spawn
+
+- [ ] test: when create demo image test data is correct
+
 - [~] join: ?? assert waits projects has keys... take a look at CONTAINSALL
+  - [ ] steel there --- when inter user completed join doesn't update steel there --- when inter user completed join doesn't update
 - [~] build: seems execute seed before super is ready
 
 - [X] join: assert project.keys are in score

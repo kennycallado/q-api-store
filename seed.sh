@@ -6,9 +6,9 @@ pwd=$(pwd)
 db_url="http://localhost:8000"
 db_user="-u root:root"
 
-center_id="centers:1"
-project_id="projects:1"
-user_id="users:1"
+# center_id="centers:a1"
+# project_id="projects:a1"
+# user_id="users:1"
 
 main() {
   example="$1"
@@ -34,28 +34,34 @@ main() {
   # inject_scopes "$ns" "$db" "$info_db"
   # inject_tables "$ns" "$db" "$info_db"
 
-  # create_roles # not needed for now
-  create_center_project_user
+  # create_center_project_user
 
   # inject data
   cd "examples/$example"
 
+  echo -e "\033[0;34m Injecting data: \033[0m"
   for file in *.surql; do
-    inject $ns $db "$file"
+    echo -e "\033[0;33m$file\033[0m"
+    sql "global" "main" "$(<$file)" | jq '.[] | .status + " " + .time'
   done
+
+  # echo -e "\033[0;34m Injecting Global data: \033[0m"
+  # for file in global/*.surql; do
+  #   echo -e "\033[0;33m$file\033[0m"
+  #   sql "global" "main" "$(<$file)" | jq '.[] | .status + " " + .time'
+  # done
+
+  # echo -e "\033[0;34m Injecting Interv data: \033[0m"
+  # for file in interv/*.surql; do
+  #   echo -e "\033[0;33m$file\033[0m"
+  #   sql "$ns" "$db" "$(<$file)" | jq '.[] | .status + " " + .time'
+  # done
 
   cd "$pwd"
 }
 
-create_roles() {
-  roles=$(sql "global" "main" "INSERT INTO roles [{id: roles:0, name: 'robot'}, {id: roles:1, name: 'admin'}, {id: roles:2 , name: 'coord'}, {id: roles:3, name: 'thera'}, {id: roles:4, name: 'parti'}, {id: roles:5, name: 'guest'}]")
-
-  printf "\033[0;31m Creating roles: \033[0m \n"
-  printf "\t$roles: \n"
-}
-
 create_center_project_user() {
-  project=$(sql "global" "main" "UPDATE $center_id SET name = '$example'; LET \$q_project = (UPDATE $project_id SET center = $center_id, name = '$example')[0]; RETURN \$q_project.token;")
+  project=$(sql "global" "main" "UPDATE $center_id SET name = '$example'; LET \$q_project = (UPDATE $project_id SET center = $center_id, name = '$example', keys = ['step', 'state'])[0]; RETURN \$q_project.token;")
   user=$(sql "global" "main" "UPDATE $user_id SET project = $project_id, username = 'kenny', password = 'kenny', role = 'admin';")
 
   # project_token=$(echo $project | jq -r '.[2].result')

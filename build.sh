@@ -39,6 +39,31 @@ main() {
 
     echo -e "\tinjecting demo"
     ./seed.sh "demo"
+
+    echo -e "\t test demo"
+    count=$(curl -sS -X POST \
+      -u "root:root" \
+      -H "NS: demo" \
+      -H "DB: demo" \
+      -H "Accept: application/json" \
+      -d "SELECT count() FROM papers GROUP BY count;" \
+      "localhost:8000/sql")
+
+    count=$(echo $count | jq '.[] | .result | .[] | .count')
+
+    echo "Are there some papers?"
+    echo "->> $count"
+
+    if [ $count -ne 3 ]; then
+      echo -e "\033[0;31mError:\033[0m The demo data is not correct"
+
+      echo -e "\tfinish container"
+      finish_container
+
+      echo -e "\tclean up"
+      clean_up
+      exit 1
+    fi
   fi
 
   echo -e "\tfinish container"
@@ -79,7 +104,7 @@ init_container() {
     --pod foo \
     --user 1000:1000 \
     "surrealdb/surrealdb:$db_version" \
-    start --user root --pass root "file://$db_file"
+    start --no-banner -A --user root --pass root "file://$db_file"
 
   while ! curl -s "$db_url/status" &> /dev/null; do
       echo "Waiting for surrealdb to start..."
@@ -94,6 +119,7 @@ init_container() {
       "kennycallado/q-api-super:latest"
   fi
 
+  echo "Waiting for super to start..."
   sleep 5
 }
 
@@ -102,7 +128,7 @@ finish_container() {
   # should be already resolved but just in case
   curl -sS -X POST \
     -u "root:root" \
-    -H "NS: main" \
+    -H "NS: global" \
     -H "Accept: application/json" \
     -d "REMOVE USER root ON ROOT" \
     "$db_url/sql" | jq '.[] | .status + " " + .time'

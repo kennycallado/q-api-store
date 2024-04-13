@@ -56,6 +56,12 @@ UPDATE resources:3 CONTENT { description: 'This is a slide two', ref: 'slides-2'
 UPDATE resources:4 CONTENT { description: 'This is a slide one', ref: 'slides-1', slides: [slides:5, slides:3, slides:7, slides:4], title: 'Slides 1', type: 'slides' };
 
 -- ------------------------------
+-- TABLE DATA: events
+-- ------------------------------
+
+UPDATE events:1 CONTENT { schedule: '0 * * * * *', script: 'steps', active: false };
+
+-- ------------------------------
 -- TRANSACTION
 -- ------------------------------
 

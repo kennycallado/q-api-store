@@ -1,8 +1,12 @@
+-- Create scripts into demo --
+
 -- ------------------------------
 -- OPTION
 -- ------------------------------
 
-OPTION IMPORT;
+-- OPTION IMPORT;
+
+USE NS demo DB demo;
 
 -- ------------------------------
 -- TRANSACTION
@@ -42,7 +46,7 @@ switch(user.score.step) {
     break;
 
   default:
-    console.error("Reached default case");
+    console.warn("Reached default case");
     break;
 }', name: 'push' };
 
@@ -70,7 +74,7 @@ switch(user.score.step) {
     user.score.state = "landed";
     
     /** action */
-    console.log("completed")
+    user.completed();
 
     break;
 
@@ -87,9 +91,31 @@ switch(user.score.step) {
     break;
 
   default:
-    console.error("Reached default case");
+    console.warn("Reached default case");
     break;
 }', name: 'steps' };
+
+UPDATE scripts:3 CONTENT { code: '
+// validations
+
+// modifications
+user.score.step = 1;
+user.score.state = "ignition";
+
+// actions
+user.active();
+user.add_resource("module-1");
+', name: 'init' };
+
+UPDATE scripts:4 CONTENT { code: '
+// validations
+
+// modifications
+user.score.completed = true;
+
+// actions
+console.log("User completed the interventions");
+', name: 'done' };
 
 -- ------------------------------
 -- TRANSACTION
@@ -97,3 +123,4 @@ switch(user.score.step) {
 
 COMMIT TRANSACTION;
 
+USE NS global DB main;

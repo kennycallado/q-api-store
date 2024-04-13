@@ -13,6 +13,20 @@ DEFINE FIELD completed ON TABLE users TYPE option<bool> DEFAULT false ASSERT $va
 -- indexes
 
 -- events
+DEFINE EVENT users_init ON TABLE users WHEN $event IS 'CREATE' THEN {
+  LET $id = $value.id;
+
+  fn::on_init($id);
+};
+
+DEFINE EVENT users_done ON TABLE users WHEN $event IS 'UPDATE' THEN {
+  IF $value.completed {
+    LET $id = $value.id;
+
+    fn::on_done($id);
+  };
+};
+
 DEFINE EVENT users_log ON TABLE users WHEN $event IN ['CREATE', 'UPDATE', 'DELETE'] THEN {
   IF $event = 'DELETE' {
     CREATE logs SET index = $before.id, event = $event, time = time::now();

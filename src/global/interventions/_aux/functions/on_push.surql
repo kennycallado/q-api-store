@@ -13,5 +13,5 @@ DEFINE FUNCTION fn::on_push($paper_id: record<papers>, $answers: option<array<re
   CREATE scores CONTENT { user: <record> $user.id, score: $user.score };
 
   -- execute actions
-  fn::execute_actions($paper, $user);
+  fn::execute_actions($user, $paper);
 };

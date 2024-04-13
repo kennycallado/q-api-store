@@ -11,6 +11,6 @@ DEFINE FUNCTION fn::on_cron($script: string) {
     CREATE scores CONTENT { user: <record> $user.id, score: $user.score };
 
     -- perform actions
-    fn::execute_actions($paper, $user);
+    fn::execute_actions($user, $paper);
   };
 };

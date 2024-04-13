@@ -43,6 +43,22 @@ DEFINE FUNCTION fn::execute_script($script: string, $user_id: record<users>, $pa
       send_message(message_id) {
         this.actions.push({ action: "send_message", params: [message_id] })
       }
+
+      active() {
+        this.actions.push({ action: "user_active", params: [] })
+      }
+
+      unactive() {
+        this.actions.push({ action: "user_unactive", params: [] })
+      }
+
+      completed() {
+        this.actions.push({ action: "user_completed", params: [] })
+      }
+
+      exit() {
+        this.actions.push({ action: "user_exit", params: [] })
+      }
     }`;
 
     return Function(`

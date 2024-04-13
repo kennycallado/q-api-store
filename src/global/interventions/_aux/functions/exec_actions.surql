@@ -1,4 +1,4 @@
-DEFINE FUNCTION fn::execute_actions($paper: option<object>, $user: object) {
+DEFINE FUNCTION fn::execute_actions($user: object, $paper: option<object>) {
   -- validation
   -- paper could be {}
   -- IF $user.actions = NONE { RETURN $paper };
@@ -37,21 +37,38 @@ DEFINE FUNCTION fn::execute_actions($paper: option<object>, $user: object) {
       };
     };
 
--- toggle_active
-    IF $actions.action = "toggle_active" {
-      UPDATE $user.id SET active = !active;
-    };
-
 -- user_active
     IF $actions.action = "user_active" {
       -- validation
+      LET $id = <record> $user.id;
 
+      --
+      UPDATE $id SET active = true;
     };
 
 -- user_unactive
     IF $actions.action = "user_unactive" {
       -- validation
 
+      --
+      UPDATE $id SET active = false;
+    };
+
+-- user_completed
+    IF $actions.action = "user_completed" {
+      -- validation
+      LET $id = <record> $user.id;
+
+      --
+      UPDATE $id SET active = false, completed = true;
+    };
+
+-- user_exit
+    IF $actions.action = "user_exit" {
+      -- validation
+      LET $id = <record> $user.id;
+
+      --
     };
 
 -- send_message

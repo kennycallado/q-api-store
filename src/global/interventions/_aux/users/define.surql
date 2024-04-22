@@ -14,9 +14,11 @@ DEFINE FIELD completed ON TABLE users TYPE option<bool> DEFAULT false ASSERT $va
 
 -- events
 DEFINE EVENT users_init ON TABLE users WHEN $event IS 'CREATE' THEN {
-  LET $id = $value.id;
+  IF $value.role IN ['parti', 'guest'] {
+    LET $id = $value.id;
 
-  fn::on_init($id);
+    fn::on_init($id);
+  };
 };
 
 DEFINE EVENT users_done ON TABLE users WHEN $event IS 'UPDATE' THEN {

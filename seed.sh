@@ -43,6 +43,7 @@ main() {
   for file in *.surql; do
     echo -e "\033[0;33m$file\033[0m"
     sql "global" "main" "$(<$file)" | jq '.[] | .status + " " + .time'
+    sleep 2
   done
 
   # echo -e "\033[0;34m Injecting Global data: \033[0m"

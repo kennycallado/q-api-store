@@ -15,7 +15,7 @@ FOR $project IN (SELECT VALUE id FROM projects) {
       project: $project
     };
 
-    sleep(100ms);
+    -- sleep(100ms);
   };
 };
 

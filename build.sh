@@ -2,7 +2,8 @@
 
 set -e
 name="q-api-store"
-version="v0.2.0"
+# version="v0.2.2"
+version=$(git describe --tags --abbrev=0)
 publish=true
 
 # db

@@ -5,7 +5,7 @@ DEFINE TABLE join SCHEMALESS PERMISSIONS
 
 -- fields
 -- DEFINE FIELD completed ON TABLE join TYPE bool DEFAULT false ASSERT $value IS false OR score IS NOT NONE;
-DEFINE FIELD state ON TABLE join TYPE option<string> ASSERT $value IN ['active', 'standby', 'exited', 'completed']; -- DEFAULT 'standby';
+DEFINE FIELD state ON TABLE join TYPE option<string> ASSERT $value IN ['active', 'standby', 'exited', 'completed', NONE]; -- DEFAULT 'standby';
 DEFINE FIELD score ON TABLE join FLEXIBLE TYPE option<object>
   ASSERT $value IS NONE
     OR $before IS NONE
@@ -19,7 +19,7 @@ DEFINE FIELD score ON TABLE join FLEXIBLE TYPE option<object>
 DEFINE INDEX unique_join ON TABLE join COLUMNS in, out UNIQUE;
 
 -- events
-DEFINE EVENT join_completed ON TABLE join WHEN $event IS 'UPDATE' AND $value.completed IS true THEN {
+DEFINE EVENT join_completed ON TABLE join WHEN $event IS 'UPDATE' AND $value.state IS 'completed' THEN {
   -- ?? maybe update users table
   -- for now is done by the super
 };

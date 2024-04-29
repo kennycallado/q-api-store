@@ -18,7 +18,7 @@ BEGIN TRANSACTION;
 -- TABLE DATA: scripts
 -- ------------------------------
 
-UPDATE scripts:1 CONTENT { code: '
+UPDATE scripts:push CONTENT { code: '
 switch(user.score.step) {
   case 1:
     /** validation */
@@ -52,7 +52,7 @@ switch(user.score.step) {
 
 -- -- -- --
 
-UPDATE scripts:2 CONTENT { code: '
+UPDATE scripts:steps CONTENT { code: '
 switch(user.score.step) {
   case 3:
     /** validation */
@@ -95,7 +95,7 @@ switch(user.score.step) {
     break;
 }', name: 'steps' };
 
-UPDATE scripts:3 CONTENT { code: '
+UPDATE scripts:init CONTENT { code: '
 // validations
 
 // modifications
@@ -107,7 +107,7 @@ user.active();
 user.add_resource("module-1");
 ', name: 'init' };
 
-UPDATE scripts:4 CONTENT { code: '
+UPDATE scripts:done CONTENT { code: '
 // validations
 
 // modifications

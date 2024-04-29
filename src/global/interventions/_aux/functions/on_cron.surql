@@ -1,6 +1,6 @@
 DEFINE FUNCTION fn::on_cron($script: string) {
   LET $script = (SELECT VALUE code FROM ONLY scripts WHERE name = $script LIMIT 1);
-  LET $users  = (SELECT VALUE id FROM users WHERE active IS true AND role IS NOT "admin");
+  LET $users  = (SELECT VALUE id FROM users WHERE state IS 'active' AND role IS NOT "admin");
 
   -- maybe if there is no paper for the user just create the actions...
   FOR $user in $users {

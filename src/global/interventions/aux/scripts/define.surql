@@ -21,3 +21,8 @@ DEFINE EVENT scripts_log ON TABLE scripts WHEN $event = "CREATE" OR $event = "UP
     CREATE logs SET index = $value.id, event = $event, time = time::now();
   }
 };
+
+-- DEFAULT scripts
+UPDATE scripts:init SET name = 'init', code = 'console.log("on_init")';
+UPDATE scripts:push SET name = 'push', code = 'console.log("on_push")';
+UPDATE scripts:done SET name = 'done', code = 'console.log("on_done")';

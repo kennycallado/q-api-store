@@ -30,7 +30,7 @@ switch(user.score.step) {
 
     /** action */
     user.resource_completed("module-1");
-    user.add_resource("form-1");
+    user.resource_add("form-1");
 
     break;
 
@@ -41,7 +41,7 @@ switch(user.score.step) {
 
     /** action */
     user.resource_completed("form-1");
-    user.add_resource(["slides-1", "slides-2"]);
+    user.resource_add(["slides-1", "slides-2"]);
 
     break;
 
@@ -74,7 +74,7 @@ switch(user.score.step) {
     user.score.state = "landed";
     
     /** action */
-    user.completed();
+    user.state_set("completed");
 
     break;
 
@@ -86,7 +86,7 @@ switch(user.score.step) {
     user.score.state = "ignition";
 
     /** action */
-    user.add_resource("module-1");
+    user.resource_add("module-1");
 
     break;
 
@@ -103,8 +103,8 @@ user.score.step = 1;
 user.score.state = "ignition";
 
 // actions
-user.active();
-user.add_resource("module-1");
+user.state_set("active");
+user.resource_add("module-1");
 ', name: 'init' };
 
 UPDATE scripts:done CONTENT { code: '

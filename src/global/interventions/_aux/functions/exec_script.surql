@@ -20,12 +20,12 @@ DEFINE FUNCTION fn::execute_script($script: string, $user_id: record<users>, $pa
         this.paper = paper;
       }
 
-      add_resource(...resource_ref) {
+      resource_add(...resource_ref) {
         if (typeof resource_ref[0] !== "string") {
           resource_ref = resource_ref[0]
         }
 
-        this.actions.push({ action: "add_resource", params: resource_ref })
+        this.actions.push({ action: "resource_add", params: resource_ref })
       }
 
       resource_completed(...resource_ids) {
@@ -40,10 +40,17 @@ DEFINE FUNCTION fn::execute_script($script: string, $user_id: record<users>, $pa
         this.actions.push({ action: "resource_completed", params: resource_ids })
       }
 
-      send_message(message_id) {
-        this.actions.push({ action: "send_message", params: [message_id] })
+      state_set(state) {
+        if (state === 'active' || state === 'standby' || state === 'completed' || state === 'exit') {
+          this.actions.push({ action: "state_set", params: state })
+        } else throw new Error('Invalid state')
       }
 
+      message_send(message_id) {
+        this.actions.push({ action: "message_send", params: message_id })
+      }
+
+      /**
       active() {
         this.actions.push({ action: "user_active", params: [] })
       }
@@ -59,6 +66,7 @@ DEFINE FUNCTION fn::execute_script($script: string, $user_id: record<users>, $pa
       exit() {
         this.actions.push({ action: "user_exit", params: [] })
       }
+      */
     }`;
 
     return Function(`
@@ -68,7 +76,7 @@ DEFINE FUNCTION fn::execute_script($script: string, $user_id: record<users>, $pa
       ${script};
 
       // user.actions.push({ action: "resource_completed", params: ['module-1'] });
-      // user.actions.push({ action: "add_resource", params: ['form-1'] });
+      // user.actions.push({ action: "resource_add", params: ['form-1'] });
       // user.actions.push({ action: "user_unactive", params: [] });
       // user.score = {mood: "100"};
 

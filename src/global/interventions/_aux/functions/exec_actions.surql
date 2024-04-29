@@ -24,8 +24,8 @@ DEFINE FUNCTION fn::execute_actions($user: object, $paper: option<object>) {
       };
     };
 
--- add_resource
-    IF $actions.action = "add_resource" {
+-- resource_add
+    IF $actions.action = "resource_add" {
       FOR $ref IN $actions.params {
         -- validation
 
@@ -37,42 +37,50 @@ DEFINE FUNCTION fn::execute_actions($user: object, $paper: option<object>) {
       };
     };
 
--- user_active
-    IF $actions.action = "user_active" {
-      -- validation
+-- state_set
+    IF $actions.action = "state_set" {
+      LET $state = $actions.params;
       LET $id = <record> $user.id;
 
-      --
-      UPDATE $id SET active = true;
+      UPDATE $id SET state = $state;
     };
 
--- user_unactive
-    IF $actions.action = "user_unactive" {
-      -- validation
+-- -- user_active
+--     IF $actions.action = "user_active" {
+--       -- validation
+--       LET $id = <record> $user.id;
+-- 
+--       --
+--       UPDATE $id SET active = true;
+--     };
+-- 
+-- -- user_unactive
+--     IF $actions.action = "user_unactive" {
+--       -- validation
+-- 
+--       --
+--       UPDATE $id SET active = false;
+--     };
+-- 
+-- -- user_completed
+--     IF $actions.action = "user_completed" {
+--       -- validation
+--       LET $id = <record> $user.id;
+-- 
+--       --
+--       UPDATE $id SET active = false, completed = true;
+--     };
 
-      --
-      UPDATE $id SET active = false;
-    };
+-- -- user_exit
+--     IF $actions.action = "user_exit" {
+--       -- validation
+--       LET $id = <record> $user.id;
+-- 
+--       --
+--     };
 
--- user_completed
-    IF $actions.action = "user_completed" {
-      -- validation
-      LET $id = <record> $user.id;
-
-      --
-      UPDATE $id SET active = false, completed = true;
-    };
-
--- user_exit
-    IF $actions.action = "user_exit" {
-      -- validation
-      LET $id = <record> $user.id;
-
-      --
-    };
-
--- send_message
-    IF $actions.action = "send_message" {
+-- message_send
+    IF $actions.action = "message_send" {
       -- validation
 
     };

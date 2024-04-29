@@ -5,10 +5,9 @@ DEFINE TABLE users SCHEMAFULL PERMISSIONS
   ;
 
 -- fields
-DEFINE FIELD pass      ON TABLE users TYPE string VALUE $before OR crypto::argon2::generate($value) PERMISSIONS FOR select NONE;
-DEFINE FIELD role      ON TABLE users TYPE option<string> ASSERT $value IN ['admin', 'coord', 'thera', 'parti', 'guest'] DEFAULT 'parti';
-DEFINE FIELD active    ON TABLE users TYPE option<bool> DEFAULT false ASSERT $value IS false OR role IN ['parti', 'guest'];
-DEFINE FIELD completed ON TABLE users TYPE option<bool> DEFAULT false ASSERT $value IS false OR role IN ['parti', 'guest'];
+DEFINE FIELD pass   ON TABLE users TYPE string VALUE $before OR crypto::argon2::generate($value) PERMISSIONS FOR select NONE;
+DEFINE FIELD role   ON TABLE users TYPE option<string> ASSERT $value IN ['admin', 'coord', 'thera', 'parti', 'guest'] DEFAULT 'parti';
+DEFINE FIELD state  ON TABLE users TYPE option<string> ASSERT $value IN ['active', 'standby', 'exited', 'completed']  DEFAULT 'standby';
 
 -- indexes
 
@@ -22,7 +21,7 @@ DEFINE EVENT users_init ON TABLE users WHEN $event IS 'CREATE' THEN {
 };
 
 DEFINE EVENT users_done ON TABLE users WHEN $event IS 'UPDATE' THEN {
-  IF $value.completed {
+  IF $value.state = 'completed' {
     LET $id = $value.id;
 
     fn::on_done($id);

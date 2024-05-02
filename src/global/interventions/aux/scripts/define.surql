@@ -1,5 +1,5 @@
 -- table
-DEFINE TABLE scripts SCHEMAFULL PERMISSIONS
+DEFINE TABLE scripts SCHEMAFULL TYPE NORMAL PERMISSIONS
   FOR select WHERE $auth,
   FOR create, update WHERE $token.role IN ['admin', 'coord', 'thera'],
   FOR delete WHERE $token.role IN ['admin', 'coord']
@@ -10,7 +10,8 @@ DEFINE FIELD name ON TABLE scripts TYPE string;
 DEFINE FIELD code ON TABLE scripts TYPE string;
 
 -- indexes
-DEFINE INDEX scripts_name ON TABLE scripts FIELDS name;
+-- WARNING: something is wrong with the UNIQUE constraint
+-- DEFINE INDEX scripts_name ON TABLE scripts COLUMNS name UNIQUE;
 
 -- events
 -- -- on create update sanitize
@@ -23,6 +24,6 @@ DEFINE EVENT scripts_log ON TABLE scripts WHEN $event = "CREATE" OR $event = "UP
 };
 
 -- DEFAULT scripts
-UPDATE scripts:init SET name = 'init', code = 'console.log("on_init")';
-UPDATE scripts:push SET name = 'push', code = 'console.log("on_push")';
-UPDATE scripts:done SET name = 'done', code = 'console.log("on_done")';
+CREATE scripts:on_init SET name = 'init', code = 'console.log("on_init")';
+CREATE scripts:on_push SET name = 'push', code = 'console.log("on_push")';
+CREATE scripts:on_done SET name = 'done', code = 'console.log("on_done")';

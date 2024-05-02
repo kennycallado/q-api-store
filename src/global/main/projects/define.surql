@@ -1,5 +1,5 @@
 -- table
-DEFINE TABLE projects SCHEMAFULL PERMISSIONS 
+DEFINE TABLE projects SCHEMAFULL TYPE ANY  PERMISSIONS 
   FOR select, create, update, delete WHERE $auth
   -- FOR select WHERE id IN (SELECT VALUE out FROM join WHERE in IS $auth),
   -- FOR create, update WHERE id IN (SELECT VALUE out FROM join WHERE in IS $auth) AND $token.role IN ['admin', 'coord'],

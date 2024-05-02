@@ -1,5 +1,5 @@
 -- table
-DEFINE TABLE papers SCHEMAFULL PERMISSIONS
+DEFINE TABLE papers SCHEMAFULL TYPE ANY PERMISSIONS
   -- old -> FOR select, create, update WHERE user = $auth
 
   -- if production only allow admin, coord

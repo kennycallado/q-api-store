@@ -1,5 +1,5 @@
 -- table
-DEFINE TABLE slides SCHEMAFULL PERMISSIONS
+DEFINE TABLE slides SCHEMAFULL TYPE ANY PERMISSIONS
   FOR select WHERE $auth,
   FOR create, update WHERE $token.role IN ['admin', 'coord', 'thera'],
   FOR delete WHERE $token.role IN ['admin', 'coord']

@@ -1,5 +1,5 @@
 -- table
-DEFINE TABLE questions SCHEMAFULL PERMISSIONS
+DEFINE TABLE questions SCHEMAFULL TYPE NORMAL PERMISSIONS
   FOR select WHERE $auth,
   FOR create, update WHERE $token.role IN ['admin', 'coord', 'thera'],
   FOR delete WHERE $token.role IN ['admin', 'coord']

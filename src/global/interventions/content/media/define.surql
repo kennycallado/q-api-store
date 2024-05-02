@@ -1,5 +1,5 @@
 -- table
-DEFINE TABLE media SCHEMAFULL PERMISSIONS
+DEFINE TABLE media SCHEMAFULL TYPE NORMAL PERMISSIONS
   FOR select WHERE $auth,
   FOR create, update WHERE $token.role IN ['admin', 'coord', 'thera'],
   FOR delete WHERE $token.role IN ['admin', 'coord']

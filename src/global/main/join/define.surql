@@ -1,17 +1,18 @@
 -- table
-DEFINE TABLE join SCHEMALESS PERMISSIONS
-  FOR select, create, update, delete WHERE $auth
-  ;
+DEFINE TABLE join SCHEMALESS TYPE ANY PERMISSIONS
+  FOR select, create, update, delete WHERE $auth;
 
 -- fields
 -- DEFINE FIELD completed ON TABLE join TYPE bool DEFAULT false ASSERT $value IS false OR score IS NOT NONE;
 DEFINE FIELD state ON TABLE join TYPE option<string> ASSERT $value IN ['active', 'standby', 'exited', 'completed', NONE]; -- DEFAULT 'standby';
 DEFINE FIELD score ON TABLE join FLEXIBLE TYPE option<object>
-  ASSERT $value IS NONE
-    OR $before IS NONE
-    AND state IS 'completed'
-    AND object::keys($value) CONTAINSALL (SELECT VALUE keys FROM ONLY $this.out LIMIT 1)
-    OR [];
+;
+  -- WARNING: needs to debug
+  -- ASSERT $value IS NONE
+  --   OR $before IS NONE
+  --   AND state IS 'completed'
+  --   AND object::keys($value) CONTAINSALL (SELECT VALUE keys FROM ONLY $this.out LIMIT 1)
+  --   OR [];
 
 -- select value score from only (select created, score from only scores order by created desc limit 1) limit 1
 

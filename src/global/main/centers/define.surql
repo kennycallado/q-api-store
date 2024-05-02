@@ -1,5 +1,5 @@
 -- table
-DEFINE TABLE centers SCHEMAFULL PERMISSIONS
+DEFINE TABLE centers SCHEMAFULL TYPE NORMAL PERMISSIONS
   FOR select, create, update, delete WHERE $auth
   ;
 

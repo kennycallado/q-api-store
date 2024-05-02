@@ -1,5 +1,5 @@
 -- table
-DEFINE TABLE answers SCHEMAFULL PERMISSIONS
+DEFINE TABLE answers SCHEMAFULL TYPE ANY PERMISSIONS
   -- old -> FOR select, create, update WHERE user = $auth
 
   -- if production only allow admin, coord

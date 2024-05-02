@@ -1,5 +1,5 @@
 -- table
-DEFINE TABLE scores SCHEMAFULL PERMISSIONS
+DEFINE TABLE scores SCHEMAFULL TYPE ANY PERMISSIONS
   -- old -> FOR select, create WHERE user = $auth
 
   FOR create WHERE user = $auth,

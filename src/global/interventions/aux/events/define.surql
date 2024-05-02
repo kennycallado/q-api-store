@@ -1,5 +1,5 @@
 -- table
-DEFINE TABLE events SCHEMAFULL PERMISSIONS
+DEFINE TABLE events SCHEMAFULL TYPE NORMAL PERMISSIONS
   -- FOR select WHERE $auth
   FOR select, create, update WHERE $token.role IN ['admin', 'coord', 'thera'],
   FOR delete WHERE $token.role IN ['admin', 'coord']

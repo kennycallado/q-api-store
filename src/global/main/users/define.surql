@@ -1,5 +1,5 @@
 -- table
-DEFINE TABLE users SCHEMAFULL PERMISSIONS
+DEFINE TABLE users SCHEMAFULL TYPE ANY PERMISSIONS
   -- FOR select WHERE id = $auth OR $token.role IN ['robot', 'admin', 'coord']
   FOR select, create, update, delete WHERE $auth
   ;

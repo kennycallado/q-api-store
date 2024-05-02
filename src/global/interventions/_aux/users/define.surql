@@ -1,5 +1,5 @@
 -- table
-DEFINE TABLE users SCHEMAFULL PERMISSIONS
+DEFINE TABLE users SCHEMAFULL TYPE ANY PERMISSIONS
   FOR select, create, update WHERE $token.role IN ['admin', 'coord', 'thera']
   FOR delete WHERE $token.role IN ['admin', 'coord']
   ;

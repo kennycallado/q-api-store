@@ -58,7 +58,7 @@ For every project there will be a database
 ### Actions:
 
 - resource_completed
-- add_resource
+- resource_add
 - send_message
 - user_active
 - user_unactive

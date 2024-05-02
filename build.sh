@@ -9,7 +9,7 @@ publish=true
 # db
 db_url="http://localhost:8000"
 db_file="data/surdb.db"
-db_version="v1.3.1"
+db_version="v1.4.2"
 
 # podman
 platforms=("linux/arm64" "linux/amd64")

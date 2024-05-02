@@ -1,9 +1,10 @@
 # TODO:
 
-- [ ] interv_users: execute fn::on_init and fn::on_done by events
+- [X] surrealdb: bump to 1.4.2
+- [X] interv_users: execute fn::on_init and fn::on_done by events
   - I think it is more performance because they are spawn
 
-- [ ] test: when create demo image test data is correct
+- [~] test: when create demo image test data is correct
 
 - [~] join: ?? assert waits projects has keys... take a look at CONTAINSALL
   - [ ] steel there --- when inter user completed join doesn't update steel there --- when inter user completed join doesn't update

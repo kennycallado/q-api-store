@@ -55,7 +55,7 @@ main() {
     echo "Are there some papers?"
     echo "->> $count"
 
-    if [ $count -ne 3 ]; then
+    if [ $count -ne 14 ]; then
       echo -e "\033[0;31mError:\033[0m The demo data is not correct"
 
       echo -e "\tfinish container"

@@ -1,4 +1,6 @@
 #! /usr/bin/env bash
+#
+# WARNING: take care of the Containerfile image version
 
 set -e
 name="q-api-store"

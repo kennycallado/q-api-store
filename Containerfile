@@ -1,4 +1,4 @@
-FROM surrealdb/surrealdb:v1.3.1
+FROM surrealdb/surrealdb:v1.4.2
 
 COPY ./data /data
 

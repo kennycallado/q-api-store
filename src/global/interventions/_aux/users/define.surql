@@ -5,7 +5,8 @@ DEFINE TABLE users SCHEMAFULL TYPE ANY PERMISSIONS
   ;
 
 -- fields
-DEFINE FIELD pass   ON TABLE users TYPE string VALUE $before OR crypto::argon2::generate($value) PERMISSIONS FOR select NONE;
+-- DEFINE FIELD pass   ON TABLE users TYPE string VALUE $before OR crypto::argon2::generate($value) PERMISSIONS FOR select NONE;
+DEFINE FIELD pass   ON TABLE users TYPE string ASSERT string::startsWith($value, '$argon2id') PERMISSIONS FOR select, update, delete NONE;
 DEFINE FIELD role   ON TABLE users TYPE option<string> ASSERT $value IN ['admin', 'coord', 'thera', 'parti', 'guest'] DEFAULT 'parti';
 DEFINE FIELD state  ON TABLE users TYPE option<string> ASSERT $value IN ['active', 'standby', 'exited', 'completed']  DEFAULT 'standby';
 

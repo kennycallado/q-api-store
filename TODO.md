@@ -1,5 +1,7 @@
 # TODO:
 
+- [ ] global_users: project has no sense
+- [~] logs: on delete $value should be the value from 1.4.2
 - [X] surrealdb: bump to 1.4.2
 - [X] interv_users: execute fn::on_init and fn::on_done by events
   - I think it is more performance because they are spawn

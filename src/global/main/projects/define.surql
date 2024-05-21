@@ -1,5 +1,5 @@
 -- table
-DEFINE TABLE projects SCHEMAFULL TYPE ANY  PERMISSIONS 
+DEFINE TABLE projects SCHEMAFULL TYPE NORMAL PERMISSIONS 
   FOR select, create, update, delete WHERE $auth
   -- FOR select WHERE id IN (SELECT VALUE out FROM join WHERE in IS $auth),
   -- FOR create, update WHERE id IN (SELECT VALUE out FROM join WHERE in IS $auth) AND $token.role IN ['admin', 'coord'],
@@ -20,6 +20,14 @@ DEFINE FIELD settings.url ON TABLE projects TYPE option<string> ASSERT $value IS
 DEFINE INDEX name_index ON TABLE projects FIELDS name UNIQUE;
 
 -- events
+
+DEFINE EVENT belongs ON TABLE projects WHEN $event IN ['CREATE'] THEN {
+  LET $id = $value.id;
+  LET $center = $value.center;
+
+  RELATE $id->belongs->$center;
+};
+
 DEFINE EVENT projects_log ON TABLE projects WHEN $event = "CREATE" OR $event = "UPDATE" OR $event = "DELETE" THEN {
   IF $event = 'DELETE' {
     CREATE logs SET index = $before.id, event = $event, time = time::now();

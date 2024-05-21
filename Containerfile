@@ -1,4 +1,5 @@
-FROM surrealdb/surrealdb:v1.4.2
+ARG version=latest
+FROM surrealdb/surrealdb:${version}
 
 COPY ./data /data
 

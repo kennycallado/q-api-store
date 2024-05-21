@@ -31,18 +31,19 @@ DEFINE EVENT users_log ON TABLE users WHEN $event IN ['CREATE', 'UPDATE', 'DELET
   };
 };
 
-DEFINE EVENT users_join ON TABLE users WHEN $event IN ['CREATE', 'UPDATE'] THEN {
-  IF $value.project IS NOT NONE {
-    LET $id = $value.id;
-    LET $project = $value.project;
+-- DEFINE EVENT users_join ON TABLE users WHEN $event IN ['CREATE', 'UPDATE'] THEN {
+--   IF $value.project IS NOT NONE {
+--     LET $id = $value.id;
+--     LET $project = $value.project;
+-- 
+--     -- check if the user is already in the project
+--     IF (SELECT id FROM join WHERE in = $id AND out = $project) {
+--       UPDATE join SET updated = time::now() WHERE in = $id AND out = $project;
+--     } ELSE {
+--       RELATE $id->join->$project;
+--     };
+--   };
 
-    -- check if the user is already in the project
-    IF (SELECT id FROM join WHERE in = $id AND out = $project) {
-      UPDATE join SET updated = time::now() WHERE in = $id AND out = $project;
-    } ELSE {
-      RELATE $id->join->$project CONTENT { created: time::now(), updated: time::now() };
-    };
-  };
   -- in case to control exit
   -- ELSE IF $before.project IS NOT NONE {
   --   LET $id = $value.id;
@@ -50,4 +51,4 @@ DEFINE EVENT users_join ON TABLE users WHEN $event IN ['CREATE', 'UPDATE'] THEN 
   --   -- RELATE $id->join->$project CONTENT { exit: true, updated: time::now() };
   --   UPDATE join SET updated = time::now() WHERE in = $id AND out = $project;
   -- };
-};
+-- };

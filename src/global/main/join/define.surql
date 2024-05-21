@@ -1,12 +1,11 @@
 -- table
-DEFINE TABLE join SCHEMALESS TYPE ANY PERMISSIONS
+DEFINE TABLE join SCHEMAFULL TYPE RELATION IN users OUT projects PERMISSIONS
   FOR select, create, update, delete WHERE $auth;
 
 -- fields
 -- DEFINE FIELD completed ON TABLE join TYPE bool DEFAULT false ASSERT $value IS false OR score IS NOT NONE;
-DEFINE FIELD state ON TABLE join TYPE option<string> ASSERT $value IN ['active', 'standby', 'exited', 'completed', NONE]; -- DEFAULT 'standby';
-DEFINE FIELD score ON TABLE join FLEXIBLE TYPE option<object>
-;
+-- DEFINE FIELD score ON TABLE join FLEXIBLE TYPE option<object>
+-- ;
   -- WARNING: needs to debug
   -- ASSERT $value IS NONE
   --   OR $before IS NONE

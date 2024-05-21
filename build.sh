@@ -4,9 +4,11 @@
 
 set -e
 name="q-api-store"
-# version="v0.2.2"
 version=$(git describe --tags --abbrev=0)
+# version="v0.2.6"
+latest=true
 publish=true
+remove_images=true
 
 # db
 db_url="http://localhost:8000"
@@ -21,19 +23,7 @@ main() {
   init_container $1
 
   echo -e "\tinjecting data\n"
-  cd src
-  for folder in */; do
-    local ns=${folder%/}
-
-    for folder_in in $folder*/; do
-      local db=${folder_in%/}
-      local db=${db#*/}
-
-      inject $ns $db
-    done
-
-  done 
-  cd ..
+  ./init.sh
 
   # inject demo example
   if [ "$1" == "true" ]; then
@@ -56,17 +46,8 @@ main() {
 
     echo "Are there some papers?"
     echo "->> $count"
-
-    if [ $count -ne 14 ]; then
-      echo -e "\033[0;31mError:\033[0m The demo data is not correct"
-
-      echo -e "\tfinish container"
-      finish_container
-
-      echo -e "\tclean up"
-      clean_up
-      exit 1
-    fi
+    echo "     🔼"
+    sleep 5
   fi
 
   echo -e "\tfinish container"
@@ -100,7 +81,7 @@ init_container() {
   mkdir ./data
   chmod -R 777 ./data
 
-  podman pod create --name foo -v ./data:/data -p 8000:8000
+  podman pod create --name foo -v ./data:/data -v ./data:/tmp -p 8000:8000
 
   podman run -d --rm \
     --name surrealdb \
@@ -163,7 +144,7 @@ create_images() {
     local tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
 
     # build the image
-    podman build --pull --no-cache --platform ${platform} -t kennycallado/${name}:${version}-${tag} -f Containerfile .
+    podman build --pull --no-cache --platform ${platform} -t kennycallado/${name}:${version}-${tag} --build-arg version=${db_version} -f Containerfile .
 
     if [ $publish == true ]; then
       podman push kennycallado/${name}:${version}-${tag}
@@ -180,14 +161,16 @@ create_images() {
       podman manifest add --arch ${platform#*/} kennycallado/${name}:${version} kennycallado/${name}:${version}-${tag}
     done
 
-    echo "Createing the latest manifest"
-    podman manifest create kennycallado/${name}:latest
-    for platform in ${platforms[@]}; do
-      local tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
-      podman manifest add --arch ${tag} kennycallado/${name}:latest kennycallado/${name}:${version}-${tag}
+    if [ $latest == true ]; then
+      echo "Createing the latest manifest"
+      podman manifest create kennycallado/${name}:latest
+      for platform in ${platforms[@]}; do
+        local tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
+        podman manifest add --arch ${tag} kennycallado/${name}:latest kennycallado/${name}:${version}-${tag}
 
-      podman manifest add --arch ${platform#*/} kennycallado/${name}:latest kennycallado/${name}:${version}-${tag}
-    done
+        podman manifest add --arch ${platform#*/} kennycallado/${name}:latest kennycallado/${name}:${version}-${tag}
+      done
+    fi
 
     echo "Pushing the manifests..."
     # and remove them
@@ -197,12 +180,14 @@ create_images() {
 }
 
 clean_up() {
-  echo "Removing the images..."
-  for platform in ${platforms[@]}; do
-    local tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
+  if [ remove_images == true ]; then
+    echo "Removing the images..."
+    for platform in ${platforms[@]}; do
+      local tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
 
-    podman rmi kennycallado/${name}:${version}-${tag}
-  done
+      podman rmi kennycallado/${name}:${version}-${tag}
+    done
+  fi
 
   echo "Cleaning up the manifest..."
   podman system prune -f

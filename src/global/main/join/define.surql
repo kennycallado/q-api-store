@@ -21,15 +21,30 @@ DEFINE FIELD state   ON TABLE join TYPE option<string>   ASSERT $value IN ['acti
 DEFINE INDEX unique ON TABLE join COLUMNS in, out UNIQUE;
 
 -- events
-DEFINE EVENT join_completed ON TABLE join WHEN $event IS 'UPDATE' AND $value.state IS 'completed' THEN {
-  -- ?? maybe update users table
-  -- for now is done by the super
+DEFINE EVENT check_can_join ON TABLE join WHEN $event IS 'CREATE' THEN {
+  LET $id = $value.id;
+  
+  $foo = (
+    SELECT
+      (<-users->roled[WHERE out IS $parent.out.center].role)[0] AS role,
+      (SELECT VALUE count(->(join WHERE state IS NOT 'completed')) -1 FROM $parent.in)[0] AS uncompleted
+    FROM ONLY $id
+  );
+
+  IF $foo.role IS NONE { 
+    THROW 'User is not in roled';
+  } ELSE IF $foo.role IN ['parti', 'guest'] {
+    IF $foo.uncompleted > 0 {
+      THROW 'User is already in a project';
+    };
+  };
+
 };
 
-DEFINE EVENT join_logs ON TABLE join WHEN $event IN ['CREATE', 'UPDATE', 'DELETE'] THEN {
-  IF $event IS 'DELETE' {
-    CREATE logs SET index = $before.id, event = $event, time = time::now();
-  } ELSE {
-    CREATE logs SET index = $value.id,  event = $event, time = time::now();
-  };
+DEFINE EVENT completed ON TABLE join WHEN $event IS 'UPDATE' AND $value.state IS 'completed' THEN {
+  UPDATE $value.in SET project = NONE;
+};
+
+DEFINE EVENT logs ON TABLE join WHEN $event IN ['CREATE', 'UPDATE', 'DELETE'] THEN {
+  CREATE logs SET index = $value.id,  event = $event, time = time::now();
 };

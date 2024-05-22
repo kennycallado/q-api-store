@@ -26,8 +26,8 @@ DEFINE EVENT check_can_join ON TABLE join WHEN $event IS 'CREATE' THEN {
   
   $foo = (
     SELECT
-      (<-users->roled[WHERE out IS $parent.out.center].role)[0] AS role,
-      (SELECT VALUE count(->(join WHERE state IS NOT 'completed')) -1 FROM $parent.in)[0] AS uncompleted
+      (<-users->roled[WHERE out IS $value.out.center].role)[0] AS role,
+      (SELECT VALUE count(->join[WHERE state IS NOT 'completed']) -1 FROM $value.in)[0] AS uncompleted
     FROM ONLY $id
   );
 

@@ -9,8 +9,10 @@ DEFINE FIELD username ON TABLE users TYPE string PERMISSIONS FOR update NONE;
 DEFINE FIELD password ON TABLE users TYPE string VALUE $before OR crypto::argon2::generate($value) PERMISSIONS FOR select, update NONE;
 DEFINE FIELD project  ON TABLE users TYPE option<record<projects> | null> PERMISSIONS
   FOR update WHERE $token.role IS 'admin'
-    OR $token.role IS 'coord' AND $value IS null OR $value IN (SELECT VALUE ->roled->centers<-belongs<-projects FROM ONLY $auth)
-    OR $token.role IS 'thera' AND $value IS null OR $value IN (SELECT VALUE ->join->projects FROM ONLY $auth);
+    OR $token.role IS 'coord' AND $value IS null
+    OR $token.role IS 'coord' AND $value IN (SELECT VALUE ->roled->centers<-belongs<-projects FROM ONLY $auth)
+    OR $token.role IS 'thera' AND $value IS null
+    OR $token.role IS 'thera' AND $value IN (SELECT VALUE ->join->projects FROM ONLY $auth);
 
 -- DEFINE FIELD roles    ON TABLE users VALUE <future> { RETURN (SELECT out as center, role FROM roled WHERE in IS $parent.id) };
 -- DEFINE FIELD role     ON TABLE users TYPE option<string> ASSERT $value IN ['robot', 'admin', 'coord', 'thera', 'parti', 'guest'] DEFAULT 'parti' PERMISSIONS FOR update NONE;

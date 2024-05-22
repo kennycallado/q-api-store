@@ -22,5 +22,6 @@ services:
     container_name: super
     image: kennycallado/q-api-super:latest
     pull_policy: "always"
+    restart: unless-stopped
     environment:
       DB_HOST: 'surrealdb:8000'

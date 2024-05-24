@@ -7,12 +7,11 @@ DEFINE TABLE users SCHEMAFULL TYPE NORMAL PERMISSIONS
 -- fields
 DEFINE FIELD username ON TABLE users TYPE string PERMISSIONS FOR update NONE;
 DEFINE FIELD password ON TABLE users TYPE string VALUE $before OR crypto::argon2::generate($value) PERMISSIONS FOR select, update NONE;
-DEFINE FIELD project  ON TABLE users TYPE option<record<projects> | null> PERMISSIONS
-  FOR update WHERE $token.role IS 'admin'
-    OR $token.role IS 'coord' AND $value IS null
-    OR $token.role IS 'coord' AND $value IN (SELECT VALUE ->roled->centers<-belongs<-projects FROM ONLY $auth)
-    OR $token.role IS 'thera' AND $value IS null
-    OR $token.role IS 'thera' AND $value IN (SELECT VALUE ->join->projects FROM ONLY $auth);
+DEFINE FIELD project  ON TABLE users TYPE option<record<projects>>
+  ASSERT ($value IS NONE)
+    OR ($value IN SELECT VALUE out FROM join WHERE in IS $parent.id)
+    OR ($value IN (SELECT VALUE (SELECT VALUE in FROM belongs WHERE out IS $parent.out) FROM roled WHERE role IN ['admin', 'coord'] AND in IS $parent.id)[0])
+    ;
 
 -- DEFINE FIELD roles    ON TABLE users VALUE <future> { RETURN (SELECT out as center, role FROM roled WHERE in IS $parent.id) };
 -- DEFINE FIELD role     ON TABLE users TYPE option<string> ASSERT $value IN ['robot', 'admin', 'coord', 'thera', 'parti', 'guest'] DEFAULT 'parti' PERMISSIONS FOR update NONE;
@@ -31,25 +30,3 @@ DEFINE INDEX username_index ON TABLE users FIELDS username UNIQUE;
 DEFINE EVENT users_log ON TABLE users WHEN $event IN ['CREATE', 'UPDATE', 'DELETE'] THEN {
   CREATE logs SET index = $value.id,  event = $event, time = time::now();
 };
-
--- DEFINE EVENT users_join ON TABLE users WHEN $event IN ['CREATE', 'UPDATE'] THEN {
---   IF $value.project IS NOT NONE {
---     LET $id = $value.id;
---     LET $project = $value.project;
--- 
---     -- check if the user is already in the project
---     IF (SELECT id FROM join WHERE in = $id AND out = $project) {
---       UPDATE join SET updated = time::now() WHERE in = $id AND out = $project;
---     } ELSE {
---       RELATE $id->join->$project;
---     };
---   };
-
-  -- in case to control exit
-  -- ELSE IF $before.project IS NOT NONE {
-  --   LET $id = $value.id;
-  --   LET $project = $before.project;
-  --   -- RELATE $id->join->$project CONTENT { exit: true, updated: time::now() };
-  --   UPDATE join SET updated = time::now() WHERE in = $id AND out = $project;
-  -- };
--- };

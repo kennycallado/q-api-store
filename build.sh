@@ -6,8 +6,9 @@ set -e
 name="q-api-store"
 version=$(git describe --tags --abbrev=0)
 # version="v0.2.6"
+testing=true
 latest=true
-publish=true
+publish=false
 remove_images=true
 
 # db
@@ -33,6 +34,8 @@ main() {
     echo -e "\tinjecting demo"
     ./seed.sh "demo"
 
+    podman logs super
+
     echo -e "\t test demo"
     count=$(curl -sS -X POST \
       -u "root:root" \
@@ -47,7 +50,59 @@ main() {
     echo "Are there some papers?"
     echo "->> $count"
     echo "     🔼"
-    sleep 5
+
+    c_users=$(curl -sS -X POST \
+      -u "root:root" \
+      -H "NS: global" \
+      -H "DB: main" \
+      -H "Accept: application/json" \
+      -d "SELECT count() FROM users GROUP BY count;" \
+      "localhost:8000/sql")
+
+    c_users=$(echo $c_users | jq '.[] | .result | .[] | .count')
+    echo 
+    echo "How many users are there?"
+    echo "->> $c_users"
+    echo "     🔼"
+
+    join=$(curl -sS -X POST \
+      -u "root:root" \
+      -H "NS: global" \
+      -H "DB: main" \
+      -H "Accept: application/json" \
+      -d "SELECT count() FROM join GROUP BY count;" \
+      "localhost:8000/sql")
+
+    join=$(echo $join | jq '.[] | .result | .[] | .count')
+    echo 
+    echo "How many joins are there?"
+    echo "->> $join"
+    echo "     🔼"
+
+    thera=$(curl -sS -X POST \
+      -u "root:root" \
+      -H "NS: global" \
+      -H "DB: main" \
+      -H "Accept: application/json" \
+      -d "SELECT count() FROM users WHERE username = 'thera' GROUP BY count;" \
+      "localhost:8000/sql")
+
+    thera=$(echo $thera | jq '.[] | .result | .[] | .count')
+    echo 
+    echo "Is there a user called thera?"
+    echo "->> $thera"
+    echo "     🔼"
+
+    sleep 1
+
+    podman logs super
+    sleep 1
+
+    if [ $testing == true ]; then
+      finish_container
+      clean_up
+      exit 0
+    fi
   fi
 
   echo -e "\tfinish container"
@@ -83,7 +138,7 @@ init_container() {
 
   podman pod create --name foo -v ./data:/data -v ./data:/tmp -p 8000:8000
 
-  podman run -d --rm \
+  podman run -d \
     --name surrealdb \
     --pod foo \
     --user 1000:1000 \
@@ -96,7 +151,7 @@ init_container() {
   done
 
   if [ "$1" == "true" ]; then
-    podman run -d --rm \
+    podman run -d \
       --name super \
       --pod foo \
       --user 1000:1000 \

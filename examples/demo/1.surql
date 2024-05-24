@@ -9,3 +9,6 @@ UPDATE projects:g2 SET center = centers:g1, name = 'foo', keys = ['step'];
 CREATE centers SET name = 'omed';
 CREATE projects SET center = (SELECT VALUE id FROM ONLY centers WHERE name = 'omed' LIMIT 1), name = 'bar', keys = ['step'];
 CREATE projects SET center = (SELECT VALUE id FROM ONLY centers WHERE name = 'omed' LIMIT 1), name = 'baz', keys = ['step'];
+
+-- because of the supervisor
+SLEEP 1s;

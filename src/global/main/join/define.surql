@@ -24,21 +24,22 @@ DEFINE INDEX unique ON TABLE join COLUMNS in, out UNIQUE;
 DEFINE EVENT check_can_join ON TABLE join WHEN $event IS 'CREATE' THEN {
   LET $id = $value.id;
   
-  $foo = (
+  $user = (
     SELECT
       (<-users->roled[WHERE out IS $value.out.center].role)[0] AS role,
       (SELECT VALUE count(->join[WHERE state IS NOT 'completed']) -1 FROM $value.in)[0] AS uncompleted
     FROM ONLY $id
   );
 
-  IF $foo.role IS NONE { 
+  IF $user.role IS NONE { 
     THROW 'User is not in roled';
-  } ELSE IF $foo.role IN ['parti', 'guest'] {
-    IF $foo.uncompleted > 0 {
+  } ELSE IF $user.role IN ['parti', 'guest'] {
+    IF $user.uncompleted > 0 {
       THROW 'User is already in a project';
+    } ELSE {
+      UPDATE $value.in SET project = $value.out;
     };
   };
-
 };
 
 DEFINE EVENT completed ON TABLE join WHEN $event IS 'UPDATE' AND $value.state IS 'completed' THEN {

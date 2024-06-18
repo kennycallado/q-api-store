@@ -6,7 +6,7 @@ DEFINE TABLE paragraphs SCHEMAFULL TYPE NORMAL PERMISSIONS
   ;
 
 DEFINE FIELD type ON TABLE paragraphs TYPE string ASSERT $value INSIDE ['h2', 'h3', 'text'];
-DEFINE FIELD ref  ON TABLE paragraphs TYPE string VALUE string::slug($value);
+DEFINE FIELD ref  ON TABLE paragraphs TYPE string ASSERT $value IS NOT EMPTY VALUE string::slug(string::lowercase($value));
 -- DEFINE FIELD ref  ON TABLE paragraphs TYPE string ASSERT $value MATCHES '^([a-z0-9]+-)+[a-z0-9]+$';
 
 

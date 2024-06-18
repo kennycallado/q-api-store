@@ -6,6 +6,7 @@ DEFINE TABLE scripts SCHEMAFULL TYPE NORMAL PERMISSIONS
   ;
 
 -- fields
+-- DEFINE FIELD ref  ON TABLE scripts TYPE string ASSERT $value IS NOT EMPTY VALUE string::slug(string::lowercase($value));
 DEFINE FIELD name ON TABLE scripts TYPE string;
 DEFINE FIELD code ON TABLE scripts TYPE string;
 

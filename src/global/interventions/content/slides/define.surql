@@ -10,6 +10,7 @@ DEFINE FIELD title    ON TABLE slides TYPE string;
 DEFINE FIELD content  ON TABLE slides TYPE option<string>;
 DEFINE FIELD media    ON TABLE slides TYPE option<record<media>>;
 DEFINE FIELD type     ON TABLE slides TYPE string ASSERT $value INSIDE ['content', 'input'];
+DEFINE FIELD ref      ON TABLE slides TYPE string ASSERT $value IS NOT EMPTY VALUE string::slug(string::lowercase($value));
 DEFINE FIELD question ON TABLE slides TYPE option<record<questions>> ASSERT $value IS NONE OR (type = 'input' AND questions = NONE);
 
 -- indexes

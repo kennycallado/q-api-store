@@ -59,7 +59,7 @@ switch(user.score.step) {
   default:
     console.warn("Reached default case");
     break;
-}', name: 'steps' };
+}', name: 'steps'};
 
 -- -- -- --
 
@@ -93,7 +93,7 @@ switch(user.score.step) {
   default:
     console.warn("Reached default case");
     break;
-}', name: 'push' };
+}', name: 'push'};
 
 -- -- -- --
 
@@ -107,7 +107,7 @@ user.score.state = "ignition";
 // actions
 user.state_set("active");
 user.resource_add("module-1");
-', name: 'init' };
+', name: 'init'};
 
 -- -- -- --
 
@@ -119,7 +119,7 @@ user.score.completed = true;
 
 // actions
 console.log("User completed the interventions");
-', name: 'done' };
+', name: 'done'};
 
 -- ------------------------------
 -- TRANSACTION

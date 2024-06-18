@@ -6,6 +6,7 @@ DEFINE TABLE messages SCHEMAFULL TYPE NORMAL PERMISSIONS
   ;
 
 -- fields
+DEFINE FIELD ref   ON TABLE messages TYPE string ASSERT $value IS NOT EMPTY VALUE string::slug(string::lowercase($value));
 DEFINE FIELD title ON TABLE messages TYPE string;
 DEFINE FIELD body  ON TABLE messages TYPE string;
 DEFINE FIELD type  ON TABLE messages TYPE string;

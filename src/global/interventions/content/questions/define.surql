@@ -6,6 +6,7 @@ DEFINE TABLE questions SCHEMAFULL TYPE NORMAL PERMISSIONS
   ;
 
 -- fields
+DEFINE FIELD ref    ON TABLE questions TYPE string ASSERT $value IS NOT EMPTY VALUE string::slug(string::lowercase($value));
 DEFINE FIELD type   ON TABLE questions TYPE string ASSERT $value INSIDE ['range', 'text'];
 DEFINE FIELD range  ON TABLE questions TYPE option<object> ASSERT $value IS NONE OR type = 'range';
 

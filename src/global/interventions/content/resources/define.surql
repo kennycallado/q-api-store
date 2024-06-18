@@ -8,7 +8,7 @@ DEFINE TABLE resources SCHEMAFULL TYPE ANY PERMISSIONS
 -- fields
 DEFINE FIELD description  ON TABLE resources TYPE string;
 DEFINE FIELD title        ON TABLE resources TYPE string ASSERT $value IS NOT EMPTY;
-DEFINE FIELD ref          ON TABLE resources TYPE string ASSERT $value IS NOT EMPTY VALUE string::slug($value);
+DEFINE FIELD ref          ON TABLE resources TYPE string ASSERT $value IS NOT EMPTY VALUE string::slug(string::lowercase($value));
 DEFINE FIELD type         ON TABLE resources TYPE string ASSERT $value INSIDE ['slides','module','form','external'];
 
 -- -- form

@@ -11,6 +11,7 @@ DEFINE FIELD script   ON TABLE events TYPE string ASSERT $value IN (SELECT VALUE
 DEFINE FIELD active   ON TABLE events TYPE bool DEFAULT false;   -- is the event active
 DEFINE FIELD since    ON TABLE events TYPE option<datetime>;
 DEFINE FIELD until    ON TABLE events TYPE option<datetime>;
+DEFINE FIELD ref      ON TABLE events TYPE string ASSERT $value IS NOT EMPTY VALUE string::slug(string::lowercase($value));
 
 -- should use jobs table
 DEFINE FIELD job_id   ON TABLE events TYPE option<uuid> DEFAULT NONE; -- job id

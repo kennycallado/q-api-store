@@ -7,6 +7,7 @@ DEFINE TABLE media SCHEMAFULL TYPE NORMAL PERMISSIONS
 
 -- fields
 DEFINE FIELD alt  ON TABLE media TYPE option<string>;
+DEFINE FIELD ref  ON TABLE media TYPE string ASSERT $value IS NOT EMPTY VALUE string::slug(string::lowercase($value));
 DEFINE FIELD url  ON TABLE media TYPE string ASSERT string::is::url($value);
 DEFINE FIELD type ON TABLE media TYPE string ASSERT $value INSIDE ['image', 'video'];
 

@@ -54,15 +54,11 @@ UPDATE questions:q8 CONTENT { content: { questions: [{ locale: 'en', question: '
 -- TABLE DATA: slides
 -- ------------------------------
 
-UPDATE slides:s1 CONTENT {id: slides:s1, ref: 'slide-one', content: 'Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidatat.', media: media:m2, title: 'Slide 3', type: 'content'};
-UPDATE slides:s2 CONTENT {id: slides:s2, ref: 'slide-two', content: 'Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidatat.', title: 'Slide 1', type: 'content'};
-UPDATE slides:s3 CONTENT {id: slides:s3, ref: 'slide-three', question: questions:q1, title: 'Slide 8', type: 'input'};
-UPDATE slides:s4 CONTENT {id: slides:s4, ref: 'slide-four', question: questions:q2, title: 'Slide 7', type: 'input'};
-UPDATE slides:s5 CONTENT {id: slides:s5, ref: 'slide-five', content: 'Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidatat.', title: 'Slide 4', type: 'content'};
-UPDATE slides:s6 CONTENT {id: slides:s6, ref: 'slide-six', question: questions:q3, title: 'Slide 6', type: 'input'};
-UPDATE slides:s7 CONTENT {id: slides:s7, ref: 'slide-seven', question: questions:q7, title: 'Slide 10', type: 'input'};
-UPDATE slides:s8 CONTENT {id: slides:s8, ref: 'slide-eight', question: questions:q8, title: 'Slide 29', type: 'input'};
-UPDATE slides:s9 CONTENT {id: slides:s9, ref: 'slide-eight', content: 'Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidatat.', title: 'Slide 2', type: 'content'};
+UPDATE slides:s1 CONTENT {id: slides:s1, ref: 'slide-one', title: 'Slide 1', elements: [media:m1, paragraphs:p1, paragraphs:p5]};
+UPDATE slides:s2 CONTENT {id: slides:s2, ref: 'slide-two', title: 'Slide 2', elements: [paragraphs:p2, paragraphs:p1, questions:q6, questions:q7, questions:q8]};
+UPDATE slides:s3 CONTENT {id: slides:s3, ref: 'slide-three', title: 'Slide 3', elements: [paragraphs:p2, paragraphs:p3, questions:q1]};
+UPDATE slides:s4 CONTENT {id: slides:s4, ref: 'slide-four', title: 'Slide 4', elements: [media:m2, paragraphs:p1, questions:q1, questions:q2, questions:q3]};
+UPDATE slides:s5 CONTENT {id: slides:s5, ref: 'slide-five', title: 'Slide 5', elements: [media:m1, paragraphs:p2, questions:q4, questions:q5]};
 
 -- ------------------------------
 -- TABLE DATA: resources

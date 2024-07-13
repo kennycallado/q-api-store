@@ -1,5 +1,17 @@
 # TODO:
 
+- [ ] suported locales per project
+- [X] slides: update model
+
+- [ ] build: it's not removing images:
+  - `localhost/kennycallado/q-api-store-demo      v0.2.6-amd64`
+  - `localhost/kennycallado/q-api-store-demo      v0.2.6-arm64`
+
+- [ ] ref: should be unique
+- [ ] ref: all content tables should have a ref
+  - `DEFINE FIELD ref  ON TABLE <table> TYPE string VALUE string::slug($value);`
+- [ ] interv_users: prevent reactivate completed or exited users
+
 - [X] build: super doesn't work properly
 
 - [X] global_users: project has no sense

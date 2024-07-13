@@ -1,6 +1,8 @@
 # TODO:
 
-- [ ] suported locales per project
+- [~] suported locales per project
+  - `DEFINE FIELD locale ON TABLE locales TYPE string ASSERT string::len($value) = 2 AND $value IN ['en', 'es', 'ca']; `
+  - should come from project config or some other place
 - [X] slides: update model
 
 - [ ] build: it's not removing images:
